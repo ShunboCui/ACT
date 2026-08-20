@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dddac830febbeba49b6c582164d73afa, type: 3}
+  m_Name: PackageTable
+  m_EditorClassIdentifier: Assembly-CSharp::PackageTable
+  DataList:
+  - id: 1
+    type: 0
+    star: 1
+    name: aaa
+    description: aaaaa
+    skillsDescription: 
+    imagePath: Image/UI/Weapon/Weapon_01
+  - id: 2
+    type: 0
+    star: 1
+    name: bbb
+    description: bbbbb
+    skillsDescription: 
+    imagePath: Image/UI/Weapon/Weapon_02
+  - id: 3
+    type: 0
+    star: 1
+    name: Haran Geppaku Futsu
+    description: 
+    skillsDescription: 'Obtain 12~24% All Elemental DMG Bonus. When other nearby
+      party members use Elemental Skills, the character equipping this weapon will
+      gain 1 Wavespike stack. Max 2 stacks. This effect can be triggered once every
+      0.3s. When the character equipping this weapon uses an Elemental Skill, all
+      stacks of Wavespike will be consumed to gain Rippling Upheaval: each stack
+      of Wavespike consumed will increase Normal Attack DMG by 20~40% for 8s.'
+    imagePath: Image/UI/Weapon/Weapon_03
+  - id: 4
+    type: 0
+    star: 1
+    name: "Sky\xADward Blade"
+    description: 
+    skillsDescription: 
+    imagePath: Image/UI/Weapon/Weapon_04
+  - id: 5
+    type: 0
+    star: 3
+    name: "Li\xADon's Roar"
+    description: 
+    skillsDescription: 
+    imagePath: Image/UI/Weapon/Weapon_05
