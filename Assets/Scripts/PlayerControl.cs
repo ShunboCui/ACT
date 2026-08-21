@@ -67,8 +67,9 @@ public class PlayerControl : MonoBehaviour
 
     private void Awake()
     {
-        PlayerAnimator = this.gameObject.GetComponent<Animator>();
+        this.PlayerAnimator = this.gameObject.GetComponent<Animator>();
         this.playerStateMachine = new PlayerStateMachine(this);
+        this.inputSystemActions = new InputSystem_Actions();
         WeaponEffect.SetActive(false);
         DamagePosition = this.transform.Find("CharacterDamagePosition");
         TakeDamageEffectPosition = this.transform.Find("CharacterGetHitEffectPosition");
@@ -79,12 +80,14 @@ public class PlayerControl : MonoBehaviour
         LastAttackTime = Time.time;
     }
 
+    private void OnEnable()
+    {
+        this.inputSystemActions.Player.Enable();
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        this.inputSystemActions = new InputSystem_Actions();
-        this.inputSystemActions.Player.Enable();
-
         //Get game controller component
         this.PlayerController = this.gameObject.GetComponent<CharacterController>();
         this.Velocity = 10f;
@@ -95,6 +98,11 @@ public class PlayerControl : MonoBehaviour
         //Instantiate(DealDamageArea, DamagePosition.position, DamagePosition.rotation);
         this.DealDamageArea.SetActive(false);
         //LockMouse();
+    }
+
+    private void OnDisable()
+    {
+        inputSystemActions.Player.Disable();
     }
 
     // Update is called once per frame
