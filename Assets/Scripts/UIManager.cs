@@ -105,9 +105,7 @@ public class UIManager
         Debug.Log("panelObject = " + panelObject);
 
         panel = panelObject.GetComponent<BasePanel>();
-
-        Debug.Log("GetComponent执行完成");
-        //
+        
         return panel;
     }
 

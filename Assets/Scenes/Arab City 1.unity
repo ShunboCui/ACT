@@ -50897,6 +50897,18 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 4785543281511187745}
+    - target: {fileID: 5727402265025381447, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 501f2a939e8ca934caf49617acec7b7a, type: 3}
+    - target: {fileID: 5727402265025381447, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5770025354260546385, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6090156121515306959, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -51409,6 +51421,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.001747335
       objectReference: {fileID: 0}
+    - target: {fileID: 6601351563690376070, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7373547190874023157, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
       propertyPath: winUI
       value: 
@@ -51428,6 +51444,10 @@ PrefabInstance:
     - target: {fileID: 7506551294732931209, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8443921258253218112, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
