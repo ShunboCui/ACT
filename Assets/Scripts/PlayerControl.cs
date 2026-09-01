@@ -224,7 +224,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public void PlayAnimation(string animationName, float transitionTime = 0.1f)
+    public void PlayAnimation(string animationName, float transitionTime = 0f)
     {
         this.PlayerAnimator.CrossFade(animationName, transitionTime);
     }
