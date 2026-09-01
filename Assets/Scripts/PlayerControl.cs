@@ -53,6 +53,7 @@ public class PlayerControl : MonoBehaviour
     public GameObject TakeDamageEffect;
     private Transform TakeDamageEffectPosition;
     private GameObject[] enemyList;
+    public float playerDamage;
     private bool underAttack = false;
     //private Slider playerHealthBar;
     private Text playerCurrentHealth;
@@ -60,9 +61,6 @@ public class PlayerControl : MonoBehaviour
     private PlayerHealth playerHealth;
 
     //public GameObject deadUI;
-    public GameObject winUI;
-    //public GameObject backgroundUI;
-    private bool win = false;
     private PlayerStateMachine playerStateMachine;
 
     private void Awake()
@@ -93,10 +91,10 @@ public class PlayerControl : MonoBehaviour
         this.Velocity = 10f;
         //PlayerCamera = Camera.main;
         this.RotateTime = 0.1f;
-        this.enemyList = GameObject.FindGameObjectsWithTag("Enemy");
 
         //Instantiate(DealDamageArea, DamagePosition.position, DamagePosition.rotation);
         this.DealDamageArea.SetActive(false);
+        enemyList = GameManager.Instance.enemyList;
         //LockMouse();
     }
 
@@ -119,8 +117,6 @@ public class PlayerControl : MonoBehaviour
         Dead();
         //MouseControl();
         //PlayerUIControl();
-        WinUIControl();
-        enemyList = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -322,6 +318,7 @@ public class PlayerControl : MonoBehaviour
 
     private void PlayerViewAngle()
     {
+        enemyList = GameManager.Instance.enemyList;
         if (enemyList == null || enemyList.Count() == 0)
         {
             return;
@@ -367,25 +364,6 @@ public class PlayerControl : MonoBehaviour
 
         //Time.timeScale = 0f;
         GameManager.Instance.GameOver();
-    }
-
-    /*
-    private void EnableWinUI()
-    {
-        UnlockMouse();
-        winUI.SetActive(true);
-        backgroundUI.SetActive(true);
-        Time.timeScale = 0f;
-    }*/
-
-    private void WinUIControl()
-    {
-        //Debug.Log(enemyList.Length.ToString());
-        if (!win && enemyList.Length == 0)
-        {
-            win = true;
-            Invoke("EnableWinUI", 2.0f);
-        }
     }
 
     /*

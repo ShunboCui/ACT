@@ -12442,6 +12442,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baec53a9d8feff24494ec7f58ec5c8e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  enemyList: []
+  winUI: {fileID: 2133702360}
 --- !u!4 &525301602
 Transform:
   m_ObjectHideFlags: 0
@@ -50853,6 +50855,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3137840850232396839, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5151135028211048035, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
       propertyPath: m_LocalPosition.x
       value: 796.84
@@ -51450,7 +51456,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8235297391126646564, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9ac987267d4e3d49b37c89ceca7fd27, type: 3}
@@ -52182,8 +52189,8 @@ SceneRoots:
   - {fileID: 2759401704782113061}
   - {fileID: 333340157}
   - {fileID: 1923817439}
-  - {fileID: 99184165279308022}
-  - {fileID: 1022604329}
   - {fileID: 525301602}
+  - {fileID: 1022604329}
+  - {fileID: 99184165279308022}
   - {fileID: 262598672}
   - {fileID: 1667103662}

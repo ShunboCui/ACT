@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     private PackageTable packageTable;
     bool sort;
+    public GameObject[] enemyList;
+    public GameObject winUI;
+    private bool win = false;
 
     public static GameManager Instance {
         get {
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         //UIManager.Instance.OpenPanel(UIConst.Background);
         LockMouse();
+        this.enemyList = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
     void Update()
@@ -38,6 +42,9 @@ public class GameManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
+
+        WinUIControl();
+        enemyList = GameObject.FindGameObjectsWithTag("Enemy");
     }
 
     public PackageTable GetPackageTable()
@@ -189,6 +196,24 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.OpenPanel("Background");
         UIManager.Instance.OpenPanel("DeadMenu");
 
+        Time.timeScale = 0f;
+    }
+
+    private void WinUIControl()
+    {
+        //Debug.Log(enemyList.Length.ToString());
+        if (!win && enemyList.Length == 0)
+        {
+            win = true;
+            Invoke("EnableWinUI", 2.0f);
+        }
+    }
+
+    
+    private void EnableWinUI()
+    {
+        UnlockMouse();
+        winUI.SetActive(true);
         Time.timeScale = 0f;
     }
 }

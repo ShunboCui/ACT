@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 079b074ea5b26cf43802ad23db014632
+guid: 925467c75aaf539419b168ffa1cccb35
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: defaultMat
-    second: {fileID: 2100000, guid: e36194b5c5e84814286a71f35b04b4ce, type: 2}
+      name: Freedom-Sworn.001
+    second: {fileID: 2100000, guid: 28ae2a4f99cce364bb9a0b46e0fca495, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

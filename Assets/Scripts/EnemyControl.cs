@@ -31,6 +31,7 @@ public class EnemyControl : MonoBehaviour
     public GameObject TakeDamageEffect;
     private Transform TakeDamageEffectPosition;
     private Slider enemyHealthBar;
+    private float playerDamage;
     public bool IsDead
     {
         get { return isDead; }
@@ -42,6 +43,7 @@ public class EnemyControl : MonoBehaviour
         this.currentHP = maxHP;
         this.enemyAnimator = this.GetComponent<Animator>();
         this.agent = this.GetComponent<NavMeshAgent>();
+        this.playerDamage = GameObject.FindWithTag("Player").GetComponent<PlayerControl>().playerDamage;
         this.player = GameObject.FindWithTag("Player").transform;
         this.TakeDamageEffectPosition = this.transform.Find("EnemyGetHitEffectPosition");
         this.DealDamagePosition = this.transform.Find("EnemyDamagePosition");
@@ -168,7 +170,7 @@ public class EnemyControl : MonoBehaviour
 
     private void TakeDamage()
     {
-        currentHP -= 20;
+        currentHP -= playerDamage;
         StartUnderAttackAnim();
         this.enemyAnimator.CrossFade("get_hit", 0.1f);
         Instantiate(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
