@@ -62,12 +62,14 @@ public class PlayerControl : MonoBehaviour
 
     //public GameObject deadUI;
     private PlayerStateMachine playerStateMachine;
+    public WeaponController weaponController;
+    public WeaponData Freedom_Sworn_Data;
 
     private void Awake()
     {
-        this.PlayerAnimator = this.gameObject.GetComponent<Animator>();
-        this.playerStateMachine = new PlayerStateMachine(this);
-        this.inputSystemActions = new InputSystem_Actions();
+        PlayerAnimator = this.gameObject.GetComponent<Animator>();
+        playerStateMachine = new PlayerStateMachine(this);
+        inputSystemActions = new InputSystem_Actions();
         WeaponEffect.SetActive(false);
         DamagePosition = this.transform.Find("CharacterDamagePosition");
         TakeDamageEffectPosition = this.transform.Find("CharacterGetHitEffectPosition");
@@ -96,6 +98,7 @@ public class PlayerControl : MonoBehaviour
         this.DealDamageArea.SetActive(false);
         enemyList = GameManager.Instance.enemyList;
         //LockMouse();
+        weaponController.EquipWeapon(Freedom_Sworn_Data);
     }
 
     private void OnDisable()
