@@ -51940,7 +51940,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 1.0333333
-    functionName: QuitAttackingState
+    functionName: AttackAnimFinished
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

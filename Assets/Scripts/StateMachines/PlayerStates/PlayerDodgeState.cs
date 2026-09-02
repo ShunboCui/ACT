@@ -17,7 +17,7 @@ public class PlayerDodgeState : PlayerBaseState
 
         this.playerControl.SetMoveSpeed(0f);
         this.playerControl.PlayAnimation("avoid_back");
-        this.playerControl.EndAttackingAction();
+        //this.playerControl.QuitAttackingState();
 
         this.playerControl.StartDodge();
     }

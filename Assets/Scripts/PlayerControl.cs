@@ -54,7 +54,7 @@ public class PlayerControl : MonoBehaviour
     private Transform TakeDamageEffectPosition;
     private GameObject[] enemyList;
     public float playerDamage;
-    private bool underAttack = false;
+    //private bool underAttack = false;
     //private Slider playerHealthBar;
     private Text playerCurrentHealth;
     private Text playerMaxHealth;
@@ -238,15 +238,16 @@ public class PlayerControl : MonoBehaviour
         DealDamageArea.SetActive(false);
     }
 
-    public void EndAttackingAction()
+    public void AttackAnimFinished()
+    {
+        this.playerStateMachine.playerAttackState.OnAttackFinished();
+    }
+
+    public void QuitAttackingState()
     {
         DisableDamageArea();
         WeaponEffect.SetActive(false);
-    }
-
-    private void QuitAttackingState()
-    {
-        this.playerStateMachine.playerAttackState.OnAttackFinished();
+        ComboState = 0;
     }
 
     private void PlayAttackSound(AnimationEvent attackSoundEvent)
@@ -276,9 +277,9 @@ public class PlayerControl : MonoBehaviour
             this.playerStateMachine.SwitchState(this.playerStateMachine.playerDodgeState);
             //PlayerAnimator.CrossFade("avoid_back", 0.1f);
             //this.StartDodge();
-            EndAttackingAction();
-            QuitAttackingState();
-            EndTakingDamage();
+            //EndAttackingAction();
+            //QuitAttackingState();
+            //EndTakingDamage();
             Invoke("EndDodge", 0.5f);
         }
     }
@@ -314,10 +315,11 @@ public class PlayerControl : MonoBehaviour
         Invoke("EndTakingDamage", 0.5f);
     }*/
 
+    /*
     private void EndTakingDamage()
     {
         underAttack = false;
-    }
+    }*/
 
     private void PlayerViewAngle()
     {

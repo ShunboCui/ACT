@@ -17,7 +17,7 @@ public class PlayerTakeDamageState : PlayerBaseState
 
         this.playerControl.SetMoveSpeed(0f);
         this.playerControl.PlayAnimation("get_hit");
-        this.playerControl.EndAttackingAction();
+        //this.playerControl.QuitAttackingState();
     }
 
     public override void Tick(float deltaTime)

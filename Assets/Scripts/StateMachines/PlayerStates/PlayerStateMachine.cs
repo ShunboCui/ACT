@@ -11,6 +11,7 @@ public class PlayerStateMachine : StateMachine
     public PlayerAttackState playerAttackState;
     public PlayerTakeDamageState playerTakeDamageState;
     public PlayerDodgeState playerDodgeState;
+    private bool quittingAttack;
     public PlayerStateMachine(PlayerControl playerControl)
     {
         this.playerControl = playerControl;
@@ -23,6 +24,20 @@ public class PlayerStateMachine : StateMachine
         //playerAttackState = new PlayerAttackState(this);
 
         SwitchState(playerIdleState);
+    }
+
+    public override void SwitchState(State newState)
+    {
+        quittingAttack =
+            currentState is PlayerAttackState &&
+            newState is not PlayerAttackState;
+
+        base.SwitchState(newState);
+
+        if (quittingAttack)
+        {
+            playerControl.QuitAttackingState();
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

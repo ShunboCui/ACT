@@ -2,9 +2,9 @@ using UnityEngine;
 
 public abstract class StateMachine
 {
-    private State currentState;
+    protected State currentState;
 
-    public void SwitchState(State newState)
+    public virtual void SwitchState(State newState)
     {
         currentState?.Exit();
         currentState = newState;

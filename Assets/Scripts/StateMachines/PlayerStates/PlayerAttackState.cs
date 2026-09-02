@@ -39,7 +39,7 @@ public class PlayerAttackState : PlayerBaseState
 
         if (attackFinished)
         {
-            this.playerControl.ComboState = 0;
+            //playerControl.ComboState = 0;
             if (playerControl.MoveInput.magnitude > 0.1f)
             {
                 playerStateMachine.SwitchState(playerStateMachine.playerMoveState);
@@ -56,7 +56,7 @@ public class PlayerAttackState : PlayerBaseState
     public override void Exit()
     {
         //Debug.Log("Exiting player test state");
-        this.playerControl.EndAttackingAction();
+        //this.playerControl.QuitAttackingState();
     }
 
     private void PlayAttack(int combo)
