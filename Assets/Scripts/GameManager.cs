@@ -205,7 +205,7 @@ public class GameManager : MonoBehaviour
         if (!win && enemyList.Length == 0)
         {
             win = true;
-            Invoke("EnableWinUI", 2.0f);
+            Invoke(nameof(EnableWinUI), 2.0f);
         }
     }
 
@@ -213,7 +213,8 @@ public class GameManager : MonoBehaviour
     private void EnableWinUI()
     {
         UnlockMouse();
-        winUI.SetActive(true);
+        UIManager.Instance.OpenPanel("Background");
+        UIManager.Instance.OpenPanel("VictoryMenu");
         Time.timeScale = 0f;
     }
 }
