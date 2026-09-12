@@ -105,6 +105,7 @@ public class PackageCell : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
             uiParent.AddSelectDeleteUid(this.packageLocalItem.uid);
         }
         UISelectAnimation.GetComponent<Animator>().SetTrigger("In");
+        uiParent.ChooseUID = this.packageLocalItem.uid;
         Debug.Log("Mouse click");
     }
 

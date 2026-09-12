@@ -147,7 +147,10 @@ public class PackagePanel : BasePanel
         {
             Destroy(scrollContent.GetChild(i).gameObject);
         }
-        foreach (PackageLocalItem packageLocalItem in PackageLocalData.Instance.LoadPackage())
+
+        List<PackageLocalItem> packageItems = PackageLocalData.Instance.LoadPackage();
+        ChooseUID = packageItems[0].uid;
+        foreach (PackageLocalItem packageLocalItem in packageItems)
         {
             Transform PackageUIItem = Instantiate(PackageUIItemPrefab.transform, scrollContent) as Transform;
             PackageCell packageCell = PackageUIItem.GetComponent<PackageCell>();

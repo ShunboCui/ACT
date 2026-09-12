@@ -18,20 +18,20 @@ MonoBehaviour:
     star: 1
     name: aaa
     description: aaaaa
-    skillsDescription: 
+    skillsDescription: aaaaaa
     imagePath: Image/UI/Weapon/Weapon_01
   - id: 2
     type: 0
     star: 1
     name: bbb
     description: bbbbb
-    skillsDescription: 
+    skillsDescription: bbbbbb
     imagePath: Image/UI/Weapon/Weapon_02
   - id: 3
     type: 0
     star: 1
     name: Haran Geppaku Futsu
-    description: 
+    description: cccccc
     skillsDescription: 'Obtain 12~24% All Elemental DMG Bonus. When other nearby
       party members use Elemental Skills, the character equipping this weapon will
       gain 1 Wavespike stack. Max 2 stacks. This effect can be triggered once every
@@ -43,13 +43,13 @@ MonoBehaviour:
     type: 0
     star: 1
     name: "Sky\xADward Blade"
-    description: 
-    skillsDescription: 
+    description: dddd
+    skillsDescription: dddddd
     imagePath: Image/UI/Weapon/Weapon_04
   - id: 5
     type: 0
     star: 3
     name: "Li\xADon's Roar"
-    description: 
-    skillsDescription: 
+    description: eeee
+    skillsDescription: eeeeee
     imagePath: Image/UI/Weapon/Weapon_05
