@@ -193,7 +193,6 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         UnlockMouse();
-        UIManager.Instance.OpenPanel("Background");
         UIManager.Instance.OpenPanel("DeadMenu");
 
         Time.timeScale = 0f;
@@ -213,7 +212,6 @@ public class GameManager : MonoBehaviour
     private void EnableWinUI()
     {
         UnlockMouse();
-        UIManager.Instance.OpenPanel("Background");
         UIManager.Instance.OpenPanel("VictoryMenu");
         Time.timeScale = 0f;
     }
