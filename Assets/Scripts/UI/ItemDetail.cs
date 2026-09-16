@@ -19,7 +19,7 @@ public class ItemDetail : MonoBehaviour
 
     private PackageLocalItem packageLocalItem;
 
-    private PackagePanel uiParent;
+    private BasePanel uiParent;
 
     private void Awake()
     {
@@ -42,7 +42,7 @@ public class ItemDetail : MonoBehaviour
     }
 
 
-    public void Refresh(PackageLocalItem packageLocalItem, PackagePanel uiParent)
+    public void Refresh(PackageLocalItem packageLocalItem, BasePanel uiParent)
     {
         this.packageLocalItem = packageLocalItem;
         this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);

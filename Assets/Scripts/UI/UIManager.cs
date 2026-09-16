@@ -56,7 +56,7 @@ public class UIManager
             {UIConst.MainPanel, "MainPanel" },
             {UIConst.VictoryPanel, "VictoryMenu" },
             {UIConst.DeadMenu, "DeadMenu" },
-            {UIConst.Background, "Background" }
+            {UIConst.ItemDetailPanel, "Package/ItemDetailPanel" }
         };
     }
 
@@ -103,8 +103,6 @@ public class UIManager
 
         //Time.timeScale = 0f;
         Debug.Log("panelObject = " + panelObject);
-
-        panel = panelObject.GetComponent<BasePanel>();
         
         return panel;
     }
@@ -129,6 +127,6 @@ public class UIConst
     public const string MainPanel = "MainPanel";
     public const string VictoryPanel = "VictoryMenu";
     public const string DeadMenu = "DeadMenu";
-    public const string Background = "Background";
+    public const string ItemDetailPanel = "ItemDetailPanel";
 
 }

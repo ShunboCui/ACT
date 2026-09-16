@@ -68,19 +68,26 @@ public class PackagePanel : BasePanel
 
     public List<string> selectedDeleteUid;
 
-    private string _selectedUID;
-
-    public string SelectedUID
+    override protected void Awake()
     {
-        get
-        {
-            return _selectedUID;
-        }
-        set
-        {
-            _selectedUID = value;
-            RefreshDetail() ;
-        }
+        base.Awake();
+        InitUI();
+    }
+
+    public void Start()
+    {
+        RefreshUI();
+    }
+
+    private void InitUI()
+    {
+        InitUIName();
+        InitClick();
+    }
+
+    private void RefreshUI()
+    {
+        RefreshScroll();
     }
 
     public void AddSelectDeleteUid(string uid)
@@ -118,28 +125,6 @@ public class PackagePanel : BasePanel
         UIDetailPanel.GetComponent<ItemDetail>().Refresh(chosenItem, this);
     }
 
-    override protected void Awake()
-    {
-        base.Awake();
-        InitUI();
-    }
-
-    public void Start()
-    {
-        RefreshUI();
-    } 
-
-    private void InitUI()
-    {
-        InitUIName();
-        InitClick();
-    }
-
-    private void RefreshUI() 
-    {
-        RefreshScroll();
-    }
-
     private void RefreshScroll()
     {
         RectTransform scrollContent = UIScrollView.GetComponent<ScrollRect>().content;
@@ -156,7 +141,6 @@ public class PackagePanel : BasePanel
             PackageCell packageCell = PackageUIItem.GetComponent<PackageCell>();
             packageCell.Refresh(packageLocalItem, this);
         }
-
     }
 
     private void InitUIName()
@@ -254,5 +238,6 @@ public class PackagePanel : BasePanel
     private void onClickDetail()
     {
         print("<<<<<< onClickDetail <<<<<<");
+        UIManager.Instance.OpenPanel("ItemDetailPanel");
     }
 }
