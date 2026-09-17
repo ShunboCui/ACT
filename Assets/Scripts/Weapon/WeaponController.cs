@@ -16,8 +16,21 @@ public class WeaponController : MonoBehaviour
     private Dictionary<WeaponData, GameObject> weaponPool
         = new Dictionary<WeaponData, GameObject>();
 
+    private static WeaponController _instance;
+    public static WeaponController Instance
+    {
+        get {
+            return _instance;
+        }
+        private set
+        {
+            _instance = value;
+        }
+    }
+
     private void Awake()
     {
+        Instance = this;
         weaponSocket = transform;
         weaponPoolRoot = GameObject.Find("WeaponPool").transform;
     }

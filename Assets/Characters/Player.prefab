@@ -316,6 +316,7 @@ MonoBehaviour:
   playerDamage: 20
   weaponController: {fileID: 709780506019906673}
   Freedom_Sworn_Data: {fileID: 11400000, guid: f555039615148f649a30e5d80d13e817, type: 2}
+  Lions_Roar_Data: {fileID: 11400000, guid: 2c9046900831bb2408aa386ea137abbe, type: 2}
 --- !u!114 &5706975477678529467
 MonoBehaviour:
   m_ObjectHideFlags: 0
