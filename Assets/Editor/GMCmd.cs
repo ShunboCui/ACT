@@ -55,6 +55,8 @@ public class GMCmd
     [MenuItem("GMCmd/Switch to weapon 2")]
     public static void SwitchWeapon()
     {
-        WeaponController.Instance.EquipWeapon(GameObject.Find("Player").GetComponent<PlayerControl>().Lions_Roar_Data);
+        //WeaponController.Instance.EquipWeapon(GameObject.Find("Player").GetComponent<PlayerControl>().Lions_Roar_Data);
+        PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(5);
+        WeaponController.Instance.EquipWeapon(packageTableItem);
     }
 }

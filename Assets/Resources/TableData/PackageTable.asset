@@ -20,6 +20,7 @@ MonoBehaviour:
     description: aaaaa
     skillsDescription: aaaaaa
     imagePath: Image/UI/Weapon/Weapon_01
+    modelPath: 
   - id: 2
     type: 0
     star: 1
@@ -27,6 +28,7 @@ MonoBehaviour:
     description: bbbbb
     skillsDescription: bbbbbb
     imagePath: Image/UI/Weapon/Weapon_02
+    modelPath: Prefabs/Weapon/Freedom_Sworn
   - id: 3
     type: 0
     star: 1
@@ -39,6 +41,7 @@ MonoBehaviour:
       stacks of Wavespike will be consumed to gain Rippling Upheaval: each stack
       of Wavespike consumed will increase Normal Attack DMG by 20~40% for 8s.'
     imagePath: Image/UI/Weapon/Weapon_03
+    modelPath: 
   - id: 4
     type: 0
     star: 1
@@ -46,6 +49,7 @@ MonoBehaviour:
     description: dddd
     skillsDescription: dddddd
     imagePath: Image/UI/Weapon/Weapon_04
+    modelPath: 
   - id: 5
     type: 0
     star: 3
@@ -53,3 +57,4 @@ MonoBehaviour:
     description: eeee
     skillsDescription: eeeeee
     imagePath: Image/UI/Weapon/Weapon_05
+    modelPath: Prefabs/Weapon/Lions_Roar

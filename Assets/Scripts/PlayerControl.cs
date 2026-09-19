@@ -63,8 +63,7 @@ public class PlayerControl : MonoBehaviour
     //public GameObject deadUI;
     private PlayerStateMachine playerStateMachine;
     public WeaponController weaponController;
-    public WeaponData Freedom_Sworn_Data;
-    public WeaponData Lions_Roar_Data;
+    public int initialWeaponId = 2;
 
     private void Awake()
     {
@@ -99,7 +98,10 @@ public class PlayerControl : MonoBehaviour
         this.DealDamageArea.SetActive(false);
         enemyList = GameManager.Instance.enemyList;
         //LockMouse();
-        WeaponController.Instance.EquipWeapon(Freedom_Sworn_Data);
+
+        //WeaponController.Instance.EquipWeapon(Freedom_Sworn_Data);
+        PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(initialWeaponId);
+        WeaponController.Instance.EquipWeapon(packageTableItem);
     }
 
     private void OnDisable()

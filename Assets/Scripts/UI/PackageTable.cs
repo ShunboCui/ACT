@@ -19,4 +19,5 @@ public class PackageTableItem
     public string description;
     public string skillsDescription;
     public string imagePath;
+    public string modelPath;
 }

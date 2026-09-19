@@ -6,6 +6,8 @@ public class ItemDetailPanel : BasePanel
     private Transform UIDetailPanel;
     private Transform UICloseButton;
     private PackagePanel packagePanel;
+    private PackageTableItem packageTableItem;
+    private PackageLocalItem chosenItem;
 
     private string _chooseUid;
 
@@ -55,17 +57,23 @@ public class ItemDetailPanel : BasePanel
 
     private void InitClick()
     {
-        UICloseButton.GetComponent<Button>().onClick.AddListener(onClickClose);
+        UICloseButton.GetComponent<Button>().onClick.AddListener(OnClickClose);
     }
 
     private void RefreshDetail()
     {
-        PackageLocalItem chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
+        chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
         UIDetailPanel.GetComponent<ItemDetail>().Refresh(chosenItem, this);
     }
 
-    private void onClickClose()
+    private void OnClickClose()
     {
         ClosePanel();
+    }
+
+    private void EquipWeapon()
+    {
+        packageTableItem = GameManager.Instance.GetPackageTableItemById(chosenItem.id);
+        WeaponController.Instance.EquipWeapon(packageTableItem);
     }
 }

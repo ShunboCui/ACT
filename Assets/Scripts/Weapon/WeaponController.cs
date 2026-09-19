@@ -9,12 +9,12 @@ public class WeaponController : MonoBehaviour
     [Header("Weapon Pool")]
     public Transform weaponPoolRoot;
 
-    private WeaponData currentWeaponData;
+    private PackageTableItem currentWeaponData;
 
     private GameObject currentWeapon;
 
-    private Dictionary<WeaponData, GameObject> weaponPool
-        = new Dictionary<WeaponData, GameObject>();
+    private Dictionary<PackageTableItem, GameObject> weaponPool
+        = new Dictionary<PackageTableItem, GameObject>();
 
     private static WeaponController _instance;
     public static WeaponController Instance
@@ -35,10 +35,10 @@ public class WeaponController : MonoBehaviour
         weaponPoolRoot = GameObject.Find("WeaponPool").transform;
     }
 
-    public void EquipWeapon(WeaponData weaponData)
+    public void EquipWeapon(PackageTableItem packageTableItem)
     {
         // 已经装备的是同一把武器
-        if (currentWeaponData == weaponData)
+        if (currentWeaponData == packageTableItem)
         {
             return;
         }
@@ -47,7 +47,7 @@ public class WeaponController : MonoBehaviour
         UnequipCurrentWeapon();
 
         // 从对象池获取武器
-        GameObject weapon = GetWeaponFromPool(weaponData);
+        GameObject weapon = GetWeaponFromPool(packageTableItem);
 
         // 挂到手上的 WeaponSocket
         weapon.transform.SetParent(weaponSocket);
@@ -64,21 +64,23 @@ public class WeaponController : MonoBehaviour
 
         // 更新当前武器
         currentWeapon = weapon;
-        currentWeaponData = weaponData;
+        currentWeaponData = packageTableItem;
     }
 
 
-    private GameObject GetWeaponFromPool(WeaponData weaponData)
+    private GameObject GetWeaponFromPool(PackageTableItem packageTableItem)
     {
         // 已经创建过
-        if (weaponPool.TryGetValue(weaponData, out GameObject weapon))
+        if (weaponPool.TryGetValue(packageTableItem, out GameObject weapon))
         {
             return weapon;
         }
 
+        GameObject t = Resources.Load<GameObject>(packageTableItem.modelPath);
+
         // 第一次使用，创建
         weapon = Instantiate(
-            weaponData.weaponPrefab,
+            t,
             weaponPoolRoot
         );
 
@@ -86,7 +88,7 @@ public class WeaponController : MonoBehaviour
 
         // 加入对象池
         weaponPool.Add(
-            weaponData,
+            packageTableItem,
             weapon
         );
 
