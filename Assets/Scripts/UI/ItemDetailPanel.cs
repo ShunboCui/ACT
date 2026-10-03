@@ -5,6 +5,7 @@ public class ItemDetailPanel : BasePanel
 {
     private Transform UIDetailPanel;
     private Transform UICloseButton;
+    private Transform UIEquipButton;
     private PackagePanel packagePanel;
     private PackageTableItem packageTableItem;
     private PackageLocalItem chosenItem;
@@ -53,11 +54,13 @@ public class ItemDetailPanel : BasePanel
     {
         UIDetailPanel = transform.Find("Center/DetailPanel");
         UICloseButton = transform.Find("TopRight/Close");
+        UIEquipButton = transform.Find("Center/Equip");
     }
 
     private void InitClick()
     {
         UICloseButton.GetComponent<Button>().onClick.AddListener(OnClickClose);
+        UIEquipButton.GetComponent<Button>().onClick.AddListener(EquipWeapon);
     }
 
     private void RefreshDetail()

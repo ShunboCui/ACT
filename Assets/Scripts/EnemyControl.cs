@@ -40,16 +40,16 @@ public class EnemyControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        this.currentHP = maxHP;
-        this.enemyAnimator = this.GetComponent<Animator>();
-        this.agent = this.GetComponent<NavMeshAgent>();
-        this.playerDamage = GameObject.FindWithTag("Player").GetComponent<PlayerControl>().playerDamage;
-        this.player = GameObject.FindWithTag("Player").transform;
-        this.TakeDamageEffectPosition = this.transform.Find("EnemyGetHitEffectPosition");
-        this.DealDamagePosition = this.transform.Find("EnemyDamagePosition");
-        this.enemyHealthBar = this.transform.Find("EnemyCanvas/Slider").gameObject.GetComponent<Slider>();
+        currentHP = maxHP;
+        enemyAnimator = this.GetComponent<Animator>();
+        agent = this.GetComponent<NavMeshAgent>();
+        playerDamage = GameObject.FindWithTag("Player").GetComponent<PlayerControl>().playerDamage;
+        player = GameObject.FindWithTag("Player").transform;
+        TakeDamageEffectPosition = this.transform.Find("EnemyGetHitEffectPosition");
+        DealDamagePosition = this.transform.Find("EnemyDamagePosition");
+        enemyHealthBar = this.transform.Find("EnemyCanvas/Slider").gameObject.GetComponent<Slider>();
 
-        this.DealDamageArea.SetActive(false);
+        DealDamageArea.SetActive(false);
     }
 
     // Update is called once per frame
