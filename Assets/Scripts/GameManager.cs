@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     bool sort;
     public GameObject[] enemyList;
     public GameObject winUI;
+    public bool IsGamePaused;
     private bool win = false;
 
     public static GameManager Instance {
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+            IsGamePaused = true;
         }
 
         WinUIControl();
@@ -124,7 +126,7 @@ public class GameManager : MonoBehaviour
             uid = System.Guid.NewGuid().ToString(),
             id = randomItem.id,
             num = 1,
-            level = 1,
+            exp = 0,
             isNew = true
         };
         PackageLocalData.Instance.items.Add(packageLocalItem);
@@ -228,14 +230,14 @@ public class PackageItemComparer : IComparer<PackageLocalItem>
 
         if (starComparison == 0)
         {
-            int idComparison = y.id.CompareTo(x.id);
+            int lvlComparison = b.level.CompareTo(a.level);
 
-            if (idComparison == 0)
+            if (lvlComparison == 0)
             {
-                return b.level.CompareTo(a.level);
+                return y.id.CompareTo(x.id);
             }
 
-            return idComparison;
+            return lvlComparison;
         }
 
         return starComparison;

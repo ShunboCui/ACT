@@ -52,7 +52,7 @@ MonoBehaviour:
     modelPath: Prefabs/Weapon/Katana
   - id: 5
     type: 0
-    star: 3
+    star: 1
     name: "Li\xADon's Roar"
     description: eeee
     skillsDescription: eeeeee

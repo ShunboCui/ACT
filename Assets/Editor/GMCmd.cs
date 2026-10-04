@@ -26,7 +26,7 @@ public class GMCmd
                 uid = Guid.NewGuid().ToString(),
                 id = i,
                 num = 1,
-                level = 1,
+                exp = 0,
                 isNew = i % 2 == 1
             };
             PackageLocalData.Instance.items.Add(packageLocalItem);

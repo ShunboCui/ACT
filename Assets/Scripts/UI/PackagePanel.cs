@@ -29,7 +29,7 @@ public class PackagePanel : BasePanel
 
     private Transform UIScrollView;
 
-    private Transform UIDetailPanel;
+    private Transform UIDetailCard;
 
     private Transform UILeftBtn;
 
@@ -85,9 +85,10 @@ public class PackagePanel : BasePanel
         InitClick();
     }
 
-    private void RefreshUI()
+    public void RefreshUI()
     {
         RefreshScroll();
+        RefreshDetail();
     }
 
     public void AddSelectDeleteUid(string uid)
@@ -122,7 +123,7 @@ public class PackagePanel : BasePanel
     private void RefreshDetail()
     {
         PackageLocalItem chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
-        UIDetailPanel.GetComponent<ItemDetail>().Refresh(chosenItem, this);
+        UIDetailCard.GetComponent<ItemDetail>().Refresh(chosenItem, this);
     }
 
     private void RefreshScroll()
@@ -133,7 +134,8 @@ public class PackagePanel : BasePanel
             Destroy(scrollContent.GetChild(i).gameObject);
         }
 
-        List<PackageLocalItem> packageItems = PackageLocalData.Instance.LoadPackage();
+        //List<PackageLocalItem> packageItems = PackageLocalData.Instance.LoadPackage();
+        List<PackageLocalItem> packageItems = GameManager.Instance.GetSortedPackageLocalItems();
         ChooseUID = packageItems[0].uid;
         foreach (PackageLocalItem packageLocalItem in packageItems)
         {
@@ -152,7 +154,7 @@ public class PackagePanel : BasePanel
         UICloseBtn = transform.Find("TopRight/Close");
         UICenter = transform.Find("Center");
         UIScrollView = transform.Find("Center/ScrollView");
-        UIDetailPanel = transform.Find("Center/DetailPanel");
+        UIDetailCard = transform.Find("Center/DetailCard");
         UILeftBtn = transform.Find("Left/Button");
         UIRightBtn = transform.Find("Right/Button");
         UIDeletePanel = transform.Find("Bottom/DeletePanel");
@@ -164,7 +166,7 @@ public class PackagePanel : BasePanel
         UIDetailBtn = transform.Find("Bottom/BottomMenus/DetailButton");
 
         UIDeletePanel.gameObject.SetActive(false);
-        UIDetailPanel.gameObject.SetActive(true)    ;
+        UIDetailCard.gameObject.SetActive(true)    ;
     }
 
     private void InitClick()

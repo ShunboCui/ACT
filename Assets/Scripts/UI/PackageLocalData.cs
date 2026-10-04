@@ -56,10 +56,20 @@ public class PackageLocalItem
     public string uid;
     public int id;
     public int num;
-    public int level;
+    public int level {
+        get { return getLevel(exp); }
+    }
+    public int exp;
     public bool isNew;
     public override string ToString()
     {
         return string.Format("[id]:{0} [num]:{1}", id, num);
+    }
+
+    private int getLevel(int exp)
+    {
+        int res = 1;
+        res += (int)(exp / 100);
+        return res;
     }
 }
