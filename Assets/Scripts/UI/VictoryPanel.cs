@@ -43,5 +43,6 @@ public class VictoryPanel : BasePanel
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        this.ClosePanel();
     }
 }

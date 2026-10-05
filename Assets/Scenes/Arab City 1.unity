@@ -6680,6 +6680,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 2933944594403161697, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608971280551782503, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6544340566067263624, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -6730,7 +6738,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7437416450195124977, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12446,6 +12454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   enemyList: []
   winUI: {fileID: 0}
+  IsGamePaused: 0
 --- !u!4 &525301602
 Transform:
   m_ObjectHideFlags: 0
@@ -40153,9 +40162,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1386741492743006181, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2418325142191418719, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
       propertyPath: m_Name
       value: Enemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2933944594403161697, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5608971280551782503, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6544340566067263624, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
       propertyPath: m_AnchorMax.x
@@ -40207,7 +40228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7437416450195124977, guid: fb5ce3002e8faee44a3a5c335d5b1a2b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

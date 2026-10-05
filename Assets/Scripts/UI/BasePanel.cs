@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BasePanel : MonoBehaviour
 {
-    protected bool isRemove = false;
+    //protected bool isRemove = false;
 
     protected new string name;
 
@@ -26,7 +26,7 @@ public class BasePanel : MonoBehaviour
 
     public virtual void ClosePanel()
     {
-        isRemove = true;
+        //isRemove = true;
         this.SetActive(false);
         Destroy(gameObject);
         if (UIManager.Instance.panelDict.ContainsKey(name)) {

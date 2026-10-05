@@ -159,7 +159,6 @@ public class EnemyControl : MonoBehaviour
     private void DealDamage()
     {
         this.DealDamageArea.SetActive(true);
-        this.enemyAnimator.SetBool("Attacking", true);
     }
 
     private void EndAttackingAction()
