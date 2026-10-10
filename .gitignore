@@ -112,3 +112,9 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+/Assets/Scripts/CustomVerticalScrollView.cs
+/Assets/Scripts/CustomVerticalScrollView.cs.meta
+/Assets/Scripts/Item.cs
+/Assets/Scripts/Item.cs.meta
+/Assets/Scenes/ScrollView.unity.meta
+/Assets/Scenes/ScrollView.unity

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e3246039d30e84e97260ee5c979f6f, type: 3}
+  m_Name: PlayerNormalAttack
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterSkillSetSO
+  skills:
+  - skillId: 0
+    skillName: Player Normal Attack
+    segments:
+    - segmentId: 0
+      timeline: {fileID: 11400000, guid: 8153970cb99f96a40b05a8770e666c6a, type: 2}
+      damage: 0
+    - segmentId: 1
+      timeline: {fileID: 11400000, guid: 73df828ba32e07240b793b9d317dcc78, type: 2}
+      damage: 0
+    - segmentId: 2
+      timeline: {fileID: 11400000, guid: 90ee756fa3b51d8478a1107cdc3143d4, type: 2}
+      damage: 0
+    - segmentId: 3
+      timeline: {fileID: 11400000, guid: 919672c3ee74dd54da2c2ed270b56c61, type: 2}
+      damage: 0

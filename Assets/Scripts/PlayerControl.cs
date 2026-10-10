@@ -22,7 +22,7 @@ public class PlayerControl : MonoBehaviour
     private float RotateSmooth;
     private float RotateTime;
 
-    public float LastAttackTime;
+    //public float LastAttackTime;
     public int ComboState = 0;
     //private string[] ComboNameList = { "combo_02_1", "combo_02_2", "combo_02_3", "combo_02_4" };
 
@@ -38,7 +38,12 @@ public class PlayerControl : MonoBehaviour
 
     private Vector3 NewMoveDirection;
 
-    public Animator PlayerAnimator { get; private set;}
+    public Animator PlayerAnimator { get; private set; }
+    private PlayerStateMachine playerStateMachine;
+    [SerializeField]
+    private CharacterSkillSetSO playerSkillSet;
+
+    public ComboManager ComboManager { get; private set; }
     public GameObject WeaponEffect;
     //Audio management component    
     public AudioSource AudioSource;
@@ -61,13 +66,13 @@ public class PlayerControl : MonoBehaviour
     private PlayerHealth playerHealth;
 
     //public GameObject deadUI;
-    private PlayerStateMachine playerStateMachine;
     public WeaponController weaponController;
     public int initialWeaponId = 2;
 
     private void Awake()
     {
         PlayerAnimator = this.gameObject.GetComponent<Animator>();
+        ComboManager = new ComboManager(this, playerSkillSet);
         playerStateMachine = new PlayerStateMachine(this);
         inputSystemActions = new InputSystem_Actions();
         WeaponEffect.SetActive(false);
@@ -77,7 +82,7 @@ public class PlayerControl : MonoBehaviour
         //playerCurrentHealth = this.transform.Find("Canvas/CurrentHP").gameObject.GetComponent<Text>();
         //playerMaxHealth = this.transform.Find("Canvas/MaxHP").gameObject.GetComponent<Text>();
         playerHealth = GetComponent<PlayerHealth>();
-        LastAttackTime = Time.time;
+        //LastAttackTime = Time.time;
     }
 
     private void OnEnable()
@@ -235,19 +240,19 @@ public class PlayerControl : MonoBehaviour
         this.PlayerAnimator.CrossFade(animationName, transitionTime);
     }
 
-    private void DealDamage()
+    public void EnableDamageArea()
     {
         DealDamageArea.SetActive(true);
     }
 
-    private void DisableDamageArea()
+    public void DisableDamageArea()
     {
         DealDamageArea.SetActive(false);
     }
 
     public void AttackAnimFinished()
     {
-        this.playerStateMachine.playerAttackState.OnAttackFinished();
+        //this.playerStateMachine.playerAttackState.OnAttackFinished();
     }
 
     public void QuitAttackingState()
@@ -376,6 +381,17 @@ public class PlayerControl : MonoBehaviour
 
         //Time.timeScale = 0f;
         GameManager.Instance.GameOver();
+    }
+
+    public void StartTestTimer()
+    {
+        ComboManager.testTotalTime = 0;
+        Debug.Log("Start test timer, current time: " + ComboManager.testTotalTime + "current logic frame: " + ComboManager.GetLogicFrame());
+    }
+
+    public void StopTestTimer()
+    {
+        Debug.Log("Timer stopped, current time: " + ComboManager.testTotalTime + "current logic frame: " + ComboManager.GetLogicFrame());
     }
 
     /*

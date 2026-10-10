@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9156357972740378206
 Transform:
   m_ObjectHideFlags: 0
@@ -49,12 +49,12 @@ MonoBehaviour:
   corner: 1
   loop: 0
   points:
-  - {x: 0, y: 2.5, z: -0.8}
-  - {x: 0, y: 4, z: -0.8}
-  - {x: 0, y: 5.5, z: -0.8}
-  - {x: 0, y: 7, z: -0.8}
-  - {x: 0, y: 8.5, z: -0.8}
-  - {x: 0, y: 10, z: -0.8}
+  - {x: 0, y: -0.025, z: 0.01}
+  - {x: 0, y: -0.04, z: 0.01}
+  - {x: 0, y: -0.055, z: 0.01}
+  - {x: 0, y: -0.07, z: 0.01}
+  - {x: 0, y: -0.085, z: 0.01}
+  - {x: 0, y: -0.1, z: 0.01}
 --- !u!1 &3722066255875540201
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,8 +315,7 @@ MonoBehaviour:
   TakeDamageEffect: {fileID: 1227413328308671116, guid: 66861d529689eb745b69eb26a120afcd, type: 3}
   playerDamage: 20
   weaponController: {fileID: 709780506019906673}
-  Freedom_Sworn_Data: {fileID: 11400000, guid: f555039615148f649a30e5d80d13e817, type: 2}
-  Lions_Roar_Data: {fileID: 11400000, guid: 2c9046900831bb2408aa386ea137abbe, type: 2}
+  initialWeaponId: 2
 --- !u!114 &5706975477678529467
 MonoBehaviour:
   m_ObjectHideFlags: 0
