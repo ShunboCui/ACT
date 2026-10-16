@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemDetail : MonoBehaviour
+public class ItemDetailCard : MonoBehaviour
 {
     private Transform UIStars;
 

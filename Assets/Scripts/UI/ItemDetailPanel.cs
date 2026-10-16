@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,10 +13,12 @@ public class ItemDetailPanel : BasePanel
     private Transform UIDetailsSwitchButton;
     private Transform UIEnhanceSwitchButton;
     private Transform UIConfirmEnhanceButton;
+    private Transform UIMaterialList;
 
     private PackagePanel packagePanel;
     private PackageTableItem packageTableItem;
     private PackageLocalItem chosenItem;
+    public GameObject MaterialItemPrefab;
 
     private string _chooseUid;
 
@@ -36,14 +39,15 @@ public class ItemDetailPanel : BasePanel
     {
         base.Awake();
         InitUI();
+        UIDetailsLayer.gameObject.SetActive(true);
+        UIEnhanceLayer.gameObject.SetActive(false);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         packagePanel = UIManager.Instance.GetPanel("PackagePanel") as PackagePanel;
-        ChooseUID = packagePanel.ChooseUID;
-        RefreshEnhanceLevel();
+        RefreshUI();
     }
 
     // Update is called once per frame
@@ -58,6 +62,12 @@ public class ItemDetailPanel : BasePanel
         InitClick();
     }
 
+    private void RefreshUI()
+    {
+        ChooseUID = packagePanel.ChooseUID;
+        RefreshEnhanceLevel();
+    }
+
     private void InitUIName()
     {
         UIDetailCard = transform.Find("Center/Details/DetailCard");
@@ -65,6 +75,7 @@ public class ItemDetailPanel : BasePanel
         UIEquipButton = transform.Find("Center/Details/Equip");
         UIDetailsLayer = transform.Find("Center/Details");
         UIEnhanceLayer = transform.Find("Center/Enhance");
+        UIMaterialList = transform.Find("Center/Enhance/Materials");
         UIDetailsSwitchButton = transform.Find("Left/Details");
         UIEnhanceSwitchButton = transform.Find("Left/Enhance");
         UIEnhanceLevelLabel = transform.Find("Center/Enhance/Level/Text");
@@ -83,7 +94,7 @@ public class ItemDetailPanel : BasePanel
     private void RefreshDetailCard()
     {
         chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
-        UIDetailCard.GetComponent<ItemDetail>().Refresh(chosenItem, this);
+        UIDetailCard.GetComponent<ItemDetailCard>().Refresh(chosenItem, this);
     }
 
     private void OnClickClose()
@@ -108,16 +119,40 @@ public class ItemDetailPanel : BasePanel
     {
         UIDetailsLayer.gameObject.SetActive(false);
         UIEnhanceLayer.gameObject.SetActive(true);
+        RefreshMaterials();
+    }
+
+    private void RefreshMaterials()
+    {
+        for (int i = 0; i < UIMaterialList.childCount; i++)
+        {
+            Destroy(UIMaterialList.GetChild(i).gameObject);
+        }
+
+        List<PackageLocalItem> packageMaterialItems = GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryMaterialType);
+
+        foreach (PackageLocalItem packageLocalItem in packageMaterialItems)
+        {
+            Transform MaterialUIItem = Instantiate(MaterialItemPrefab.transform, UIMaterialList) as Transform;
+            MaterialCell materialCell = MaterialUIItem.GetComponent<MaterialCell>();
+            materialCell.Refresh(packageLocalItem, this);
+        }
+    }
+
+    private void SelectMaterial()
+    {
+
+    }
+
+    private void RefreshEnhanceLevel()
+    {
+        UIEnhanceLevelLabel.GetComponent<Text>().text = "Level " + chosenItem.level.ToString();
     }
 
     private void ConfirmEnhance()
     {
         GameManager.Instance.GetPackageLocalItemByUId(chosenItem.uid).exp += 100;
         RefreshEnhanceLevel();
-    }
-
-    private void RefreshEnhanceLevel()
-    {
-        UIEnhanceLevelLabel.GetComponent<Text>().text = "Level " + chosenItem.level.ToString();
+        PackageLocalData.Instance.SavePackage();
     }
 }

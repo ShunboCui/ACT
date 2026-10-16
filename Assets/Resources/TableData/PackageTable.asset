@@ -68,3 +68,27 @@ MonoBehaviour:
     skillsDescription: eeeeee
     imagePath: Image/UI/Weapon/Weapon_05
     modelPath: Prefabs/Weapon/Lions_Roar
+  - id: 6
+    type: 2
+    star: 0
+    name: Enhancement Ore
+    description: eeee
+    skillsDescription: Weapon EXP material. Gives 400 EXP.
+    imagePath: Image/UI/Material/Item_Enhancement_Ore
+    modelPath: 
+  - id: 7
+    type: 2
+    star: 0
+    name: Fine Enhancement Ore
+    description: eeee
+    skillsDescription: Weapon EXP material. Gives 2,000 EXP.
+    imagePath: Image/UI/Material/Item_Fine_Enhancement_Ore
+    modelPath: 
+  - id: 8
+    type: 2
+    star: 0
+    name: Mystic Enhancement Ore
+    description: eeee
+    skillsDescription: Weapon EXP material. Gives 10,000 EXP.
+    imagePath: Image/UI/Material/Item_Mystic_Enhancement_Ore
+    modelPath: 

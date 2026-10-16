@@ -5,7 +5,7 @@ public class PackageLocalData
 {
     private PackageLocalData()
     {
-        // 可选的初始化逻辑，例如 items = new List<PackageLocalItem>();
+        // Optional initialization, for example: items = new List<PackageLocalItem>();
     }
 
     private static PackageLocalData _instance;

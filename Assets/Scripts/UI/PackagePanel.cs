@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -20,6 +21,8 @@ public class PackagePanel : BasePanel
     private Transform UIMenuWeapon;
 
     private Transform UIMenuFood;
+
+    private Transform UIWeaponCount;
 
     private Transform UITabName;
 
@@ -52,6 +55,7 @@ public class PackagePanel : BasePanel
     public GameObject PackageUIItemPrefab;
 
     public PackageMode curMode = PackageMode.normal;
+    private const int maxWeaponCount = 1000;
 
     private string _chooseUid;
 
@@ -89,6 +93,7 @@ public class PackagePanel : BasePanel
     {
         RefreshScroll();
         RefreshDetail();
+        RefreshCount();
     }
 
     public void AddSelectDeleteUid(string uid)
@@ -123,7 +128,7 @@ public class PackagePanel : BasePanel
     private void RefreshDetail()
     {
         PackageLocalItem chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
-        UIDetailCard.GetComponent<ItemDetail>().Refresh(chosenItem, this);
+        UIDetailCard.GetComponent<ItemDetailCard>().Refresh(chosenItem, this);
     }
 
     private void RefreshScroll()
@@ -135,9 +140,10 @@ public class PackagePanel : BasePanel
         }
 
         //List<PackageLocalItem> packageItems = PackageLocalData.Instance.LoadPackage();
-        List<PackageLocalItem> packageItems = GameManager.Instance.GetSortedPackageLocalItems();
-        ChooseUID = packageItems[0].uid;
-        foreach (PackageLocalItem packageLocalItem in packageItems)
+        //List<PackageLocalItem> packageItems = GameManager.Instance.GetSortedPackageLocalItems();
+        List<PackageLocalItem> packageWeaponItems = GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryWeaponType);
+        ChooseUID = packageWeaponItems[0].uid;
+        foreach (PackageLocalItem packageLocalItem in packageWeaponItems)
         {
             Transform PackageUIItem = Instantiate(PackageUIItemPrefab.transform, scrollContent) as Transform;
             PackageCell packageCell = PackageUIItem.GetComponent<PackageCell>();
@@ -145,11 +151,17 @@ public class PackagePanel : BasePanel
         }
     }
 
+    private void RefreshCount()
+    {
+        UIWeaponCount.gameObject.GetComponent<Text>().text = "Weapon " + GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryWeaponType).Count().ToString() + "/" + maxWeaponCount.ToString();
+    }
+
     private void InitUIName()
     {
         UIMenu = transform.Find("TopCenter/Menus");
         UIMenuWeapon = transform.Find("TopCenter/Menus/Weapon");
         UIMenuFood = transform.Find("TopCenter/Menus/Food");
+        UIWeaponCount = transform.Find("TopRight/NumText");
         UITabName = transform.Find("TopLeft/TabName");
         UICloseBtn = transform.Find("TopRight/Close");
         UICenter = transform.Find("Center");

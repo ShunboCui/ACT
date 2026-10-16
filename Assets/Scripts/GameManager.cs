@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public List<PackageTableItem> GetPackageDataByType(int itemType)
+    public List<PackageTableItem> GetPackageTableByType(int itemType)
     {
         List<PackageTableItem> packageItems = new List<PackageTableItem>();
         foreach (PackageTableItem packageItem in Instance.GetPackageTable().DataList)
@@ -117,9 +117,29 @@ public class GameManager : MonoBehaviour
         return packageItems;
     }
 
+    public List<PackageLocalItem> GetPackageLocalItemsByType(int itemType)
+    {
+        List<PackageTableItem> tableItems = GetPackageTableByType(itemType);
+        List<int> typeIds = new List<int>();
+        for (int i = 0; i < tableItems.Count; i++)
+        {
+            typeIds.Add(tableItems[i].id);
+        }
+
+        List <PackageLocalItem> localItems = GetPackageLocalItems();
+        List<PackageLocalItem> res = new List<PackageLocalItem>();
+        for (int i = 0; i < localItems.Count; i++) {
+            if (typeIds.Contains(localItems[i].id)) {
+                res.Add(localItems[i]); 
+            }
+        }
+
+        return res;
+    }
+
     public PackageLocalItem PullRandom()
     {
-        List<PackageTableItem> packageItems = GetPackageDataByType(GameConst.InventoryWeaponType);
+        List<PackageTableItem> packageItems = GetPackageTableByType(GameConst.InventoryWeaponType);
         int index = Random.Range(0, packageItems.Count);
         PackageTableItem randomItem = packageItems[index];
         PackageLocalItem packageLocalItem = new PackageLocalItem() {
@@ -249,4 +269,5 @@ public class GameConst
     public const int InventoryWeaponType = 0;
 
     public const int InventoryFoodType = 1;
+    public const int InventoryMaterialType = 2;
 }

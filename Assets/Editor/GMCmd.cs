@@ -31,6 +31,20 @@ public class GMCmd
             };
             PackageLocalData.Instance.items.Add(packageLocalItem);
         }
+
+        for (int j = 6; j < 9; j++)
+        {
+            PackageLocalItem packageLocalItemMaterial = new PackageLocalItem()
+            {
+                uid = Guid.NewGuid().ToString(),
+                id = j,
+                num = 10,
+                exp = 0,
+                isNew = false
+            };
+            PackageLocalData.Instance.items.Add(packageLocalItemMaterial);
+        }
+
         PackageLocalData.Instance.SavePackage();
     }
 

@@ -198,7 +198,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5355\u62BD"
+  m_Text: Single Pull
 --- !u!1 &3257338604844780489
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,7 +714,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5341\u62BD"
+  m_Text: 10 Pulls
 --- !u!1001 &536720117118336810
 PrefabInstance:
   m_ObjectHideFlags: 0
