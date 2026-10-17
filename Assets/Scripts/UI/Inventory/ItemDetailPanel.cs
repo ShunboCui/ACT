@@ -14,10 +14,12 @@ public class ItemDetailPanel : BasePanel
     private Transform UIEnhanceSwitchButton;
     private Transform UIConfirmEnhanceButton;
     private Transform UIMaterialList;
+    private InventoryController controller;
 
-    private PackagePanel packagePanel;
+    private InventoryPanel packagePanel;
     private PackageTableItem packageTableItem;
-    private PackageLocalItem chosenItem;
+    private InventorySlotItem chosenItem;
+    public int selectedExp;
     public GameObject MaterialItemPrefab;
 
     private string _chooseUid;
@@ -38,6 +40,7 @@ public class ItemDetailPanel : BasePanel
     protected override void Awake()
     {
         base.Awake();
+        controller = new InventoryController();
         InitUI();
         UIDetailsLayer.gameObject.SetActive(true);
         UIEnhanceLayer.gameObject.SetActive(false);
@@ -46,7 +49,7 @@ public class ItemDetailPanel : BasePanel
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        packagePanel = UIManager.Instance.GetPanel("PackagePanel") as PackagePanel;
+        packagePanel = UIManager.Instance.GetPanel("InventoryPanel") as InventoryPanel;
         RefreshUI();
     }
 
@@ -93,7 +96,7 @@ public class ItemDetailPanel : BasePanel
 
     private void RefreshDetailCard()
     {
-        chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
+        chosenItem = GameManager.Instance.GetInventoryItemByUId(_chooseUid);
         UIDetailCard.GetComponent<ItemDetailCard>().Refresh(chosenItem, this);
     }
 
@@ -115,6 +118,7 @@ public class ItemDetailPanel : BasePanel
         UIEnhanceLayer.gameObject.SetActive(false);
         UIDetailsLayer.gameObject.SetActive(true);
     }
+
     private void SwitchToEnhance()
     {
         UIDetailsLayer.gameObject.SetActive(false);
@@ -129,13 +133,14 @@ public class ItemDetailPanel : BasePanel
             Destroy(UIMaterialList.GetChild(i).gameObject);
         }
 
-        List<PackageLocalItem> packageMaterialItems = GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryMaterialType);
+        List<InventorySlotItem> inventoryMaterialItems = controller.GetItemsByType(GameConst.InventoryMaterialType);
+        if (inventoryMaterialItems.Count == 0) return;
 
-        foreach (PackageLocalItem packageLocalItem in packageMaterialItems)
+        foreach (InventorySlotItem inventoryMaterialItem in inventoryMaterialItems)
         {
             Transform MaterialUIItem = Instantiate(MaterialItemPrefab.transform, UIMaterialList) as Transform;
-            MaterialCell materialCell = MaterialUIItem.GetComponent<MaterialCell>();
-            materialCell.Refresh(packageLocalItem, this);
+            MaterialSlotView materialSlotView = MaterialUIItem.GetComponent<MaterialSlotView>();
+            materialSlotView.Refresh(inventoryMaterialItem, this);
         }
     }
 
@@ -146,13 +151,15 @@ public class ItemDetailPanel : BasePanel
 
     private void RefreshEnhanceLevel()
     {
+        selectedExp = 0;
         UIEnhanceLevelLabel.GetComponent<Text>().text = "Level " + chosenItem.level.ToString();
     }
 
     private void ConfirmEnhance()
     {
-        GameManager.Instance.GetPackageLocalItemByUId(chosenItem.uid).exp += 100;
+        GameManager.Instance.GetInventoryItemByUId(chosenItem.uid).exp += selectedExp;
+        RefreshMaterials();
         RefreshEnhanceLevel();
-        PackageLocalData.Instance.SavePackage();
+        InventorySlotData.Instance.SaveInventory();
     }
 }

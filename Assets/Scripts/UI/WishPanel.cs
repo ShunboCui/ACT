@@ -63,7 +63,7 @@ public class WishPanel : BasePanel
             Destroy(UICenter.GetChild(i).gameObject);
         }
 
-        PackageLocalItem singlePullItem = GameManager.Instance.PullRandom();
+        InventorySlotItem singlePullItem = GameManager.Instance.PullRandom();
 
         Transform wishCellItem = Instantiate(PullItemPrefab.transform, UICenter) as Transform;
 
@@ -78,7 +78,7 @@ public class WishPanel : BasePanel
             Destroy(UICenter.GetChild(i).gameObject);
         }
 
-        List<PackageLocalItem> tenPullsItems = GameManager.Instance.PullRandom10();
+        List<InventorySlotItem> tenPullsItems = GameManager.Instance.PullRandom10();
 
         for (int i = 0; i < tenPullsItems.Count; i++)
         {

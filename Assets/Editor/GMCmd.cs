@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class GMCmd
 {
-    [MenuItem("GMCmd/Read table")]
-    public static void ReadTable()
+    [MenuItem("GMCmd/Print table")]
+    public static void PrintTable()
     {
         PackageTable packageTable = Resources.Load<PackageTable>("TableData/PackageTable");
         foreach (PackageTableItem packageTableitem in packageTable.DataList)
@@ -16,12 +16,12 @@ public class GMCmd
         }
     }
 
-    [MenuItem("GMCmd/Create packate data")]
-    public static void CreateLocalPackageData()
+    [MenuItem("GMCmd/Create inventory save data")]
+    public static void CreateInventorySaveData()
     {
-        PackageLocalData.Instance.items = new List<PackageLocalItem>();
+        InventorySlotData.Instance.items = new List<InventorySlotItem>();
         for (int i = 1; i < 6; i ++) {
-            PackageLocalItem packageLocalItem = new PackageLocalItem()
+            InventorySlotItem packageLocalItem = new InventorySlotItem()
             {
                 uid = Guid.NewGuid().ToString(),
                 id = i,
@@ -29,40 +29,40 @@ public class GMCmd
                 exp = 0,
                 isNew = i % 2 == 1
             };
-            PackageLocalData.Instance.items.Add(packageLocalItem);
+            InventorySlotData.Instance.items.Add(packageLocalItem);
         }
 
         for (int j = 6; j < 9; j++)
         {
-            PackageLocalItem packageLocalItemMaterial = new PackageLocalItem()
+            InventorySlotItem packageLocalItemMaterial = new InventorySlotItem()
             {
                 uid = Guid.NewGuid().ToString(),
                 id = j,
-                num = 10,
+                num = 50,
                 exp = 0,
                 isNew = false
             };
-            PackageLocalData.Instance.items.Add(packageLocalItemMaterial);
+            InventorySlotData.Instance.items.Add(packageLocalItemMaterial);
         }
 
-        PackageLocalData.Instance.SavePackage();
+        InventorySlotData.Instance.SaveInventory();
     }
 
-    [MenuItem("GMCmd/Read package data")]
-    public static void ReadLocalPackageData()
+    [MenuItem("GMCmd/Print inventory data")]
+    public static void PrintInventorySaveData()
     {
-        List<PackageLocalItem> packageLocalItem = new List<PackageLocalItem>();
-        packageLocalItem = PackageLocalData.Instance.LoadPackage();
-        foreach (PackageLocalItem item in packageLocalItem)
+        List<InventorySlotItem> inventorySlotItems = new List<InventorySlotItem>();
+        inventorySlotItems = InventorySlotData.Instance.LoadInventory();
+        foreach (InventorySlotItem item in inventorySlotItems)
         {
             Debug.Log(item);
         }
     }
 
     [MenuItem("GMCmd/Open package panel")]
-    public static void OpenPackagePanel()
+    public static void OpenInventoryPanel()
     {
-        UIManager.Instance.OpenPanel(UIConst.PackagePanel);
+        UIManager.Instance.OpenPanel(UIConst.InventoryPanel);
 
     }
 

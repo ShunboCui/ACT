@@ -20,4 +20,5 @@ public class PackageTableItem
     public string skillsDescription;
     public string imagePath;
     public string modelPath;
+    public int expGain;
 }

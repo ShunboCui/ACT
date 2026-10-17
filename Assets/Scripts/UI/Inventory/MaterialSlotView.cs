@@ -2,13 +2,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MaterialCell : MonoBehaviour, IPointerClickHandler
+public class MaterialSlotView : MonoBehaviour, IPointerClickHandler
 {
     private Transform UIIcon;
     private Transform UICount;
     private ItemDetailPanel uiParent;
     private PackageTableItem packageTableItem;
-    private PackageLocalItem packageLocalItem;
+    private InventorySlotItem inventoryMaterialItem;
     private int selectedCount;
 
 
@@ -43,10 +43,10 @@ public class MaterialCell : MonoBehaviour, IPointerClickHandler
         Debug.Log(UIIcon);
     }
 
-    public void Refresh(PackageLocalItem packageLocalItem, ItemDetailPanel uiParent)
+    public void Refresh(InventorySlotItem inventoryMaterialItem, ItemDetailPanel uiParent)
     {
-        this.packageLocalItem = packageLocalItem;
-        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);
+        this.inventoryMaterialItem = inventoryMaterialItem;
+        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(inventoryMaterialItem.id);
         this.uiParent = uiParent;
 
         //Image of the item
@@ -58,13 +58,14 @@ public class MaterialCell : MonoBehaviour, IPointerClickHandler
 
     private void RefreshNumber()
     {
-        UICount.GetComponent<Text>().text = selectedCount.ToString() + "/" + packageLocalItem.num.ToString();
+        UICount.GetComponent<Text>().text = selectedCount.ToString() + "/" + inventoryMaterialItem.num.ToString();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Mouse click");
         selectedCount += 1;
+        uiParent.selectedExp += 100;
         RefreshNumber();
     }
 }

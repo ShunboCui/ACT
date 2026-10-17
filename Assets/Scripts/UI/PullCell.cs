@@ -5,7 +5,7 @@ public class PullCell : MonoBehaviour
 {
     private Transform UIImage;
     private Transform UIStars;
-    private PackageLocalItem packageLocalItem;
+    private InventorySlotItem inventorySlotItem;
     private PackageTableItem packageTableItem;
     private WishPanel uiParent;
 
@@ -37,9 +37,9 @@ public class PullCell : MonoBehaviour
         UIStars = transform.Find("Bottom/Stars");
     }
 
-    public void Refresh(PackageLocalItem packageLocalItem, WishPanel uiParent)
+    public void Refresh(InventorySlotItem packageLocalItem, WishPanel uiParent)
     {
-        this.packageLocalItem = packageLocalItem;
+        this.inventorySlotItem = packageLocalItem;
         this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);
         this.uiParent = uiParent;
 

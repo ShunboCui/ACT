@@ -51,12 +51,12 @@ public class UIManager
         panelDict = new Dictionary<string, BasePanel>();
         pathDict = new Dictionary<string, string>()
         {
-            {UIConst.PackagePanel, "Package/PackagePanel" },
+            {UIConst.InventoryPanel, "Inventory/InventoryPanel" },
             {UIConst.WishPanel, "Wish/WishPanel" },
             {UIConst.MainPanel, "MainPanel" },
             {UIConst.VictoryPanel, "VictoryMenu" },
             {UIConst.DeadMenu, "DeadMenu" },
-            {UIConst.ItemDetailPanel, "Package/ItemDetailPanel" }
+            {UIConst.ItemDetailPanel, "Inventory/ItemDetailPanel" }
         };
     }
 
@@ -95,7 +95,7 @@ public class UIManager
         }
 
         GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
-        Debug.Log("Instantiate执行完成");
+        Debug.Log("Instantiate completed");
         panel = panelObject.GetComponent<BasePanel>();
         panel.OpenPanel(name);
         panelDict.Add(name, panel);
@@ -122,7 +122,7 @@ public class UIManager
 
 public class UIConst
 {
-    public const string PackagePanel = "PackagePanel";
+    public const string InventoryPanel = "InventoryPanel";
     public const string WishPanel = "WishPanel";
     public const string MainPanel = "MainPanel";
     public const string VictoryPanel = "VictoryMenu";

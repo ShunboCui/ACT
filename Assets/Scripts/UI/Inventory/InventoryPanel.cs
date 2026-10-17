@@ -14,7 +14,7 @@ public enum PackageMode
     sort
 }
 
-public class PackagePanel : BasePanel
+public class InventoryPanel : BasePanel
 {
     private Transform UIMenu;
 
@@ -51,8 +51,9 @@ public class PackagePanel : BasePanel
     private Transform UIDeleteBtn;
 
     private Transform UIDetailBtn;
+    private InventoryController controller;
 
-    public GameObject PackageUIItemPrefab;
+    public GameObject InventorySlotUIPrefab;
 
     public PackageMode curMode = PackageMode.normal;
     private const int maxWeaponCount = 1000;
@@ -75,6 +76,7 @@ public class PackagePanel : BasePanel
     override protected void Awake()
     {
         base.Awake();
+        controller = new InventoryController();
         InitUI();
     }
 
@@ -119,16 +121,10 @@ public class PackagePanel : BasePanel
         RectTransform scrollContent = UIScrollView.GetComponent<ScrollRect>().content;
         foreach (Transform cell in scrollContent)
         {
-            PackageCell packageCell = cell.GetComponent<PackageCell>();
+            InventorySlotView packageCell = cell.GetComponent<InventorySlotView>();
             //Refresh packageCell
             packageCell.RefreshDeleteState();
         }
-    }
-
-    private void RefreshDetail()
-    {
-        PackageLocalItem chosenItem = GameManager.Instance.GetPackageLocalItemByUId(_chooseUid);
-        UIDetailCard.GetComponent<ItemDetailCard>().Refresh(chosenItem, this);
     }
 
     private void RefreshScroll()
@@ -141,19 +137,29 @@ public class PackagePanel : BasePanel
 
         //List<PackageLocalItem> packageItems = PackageLocalData.Instance.LoadPackage();
         //List<PackageLocalItem> packageItems = GameManager.Instance.GetSortedPackageLocalItems();
-        List<PackageLocalItem> packageWeaponItems = GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryWeaponType);
-        ChooseUID = packageWeaponItems[0].uid;
-        foreach (PackageLocalItem packageLocalItem in packageWeaponItems)
+        //List<PackageLocalItem> packageWeaponItems = GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryWeaponType);
+        List<InventorySlotItem> inventoryWeaponItems = controller.GetItemsByType(GameConst.InventoryWeaponType);
+        if (inventoryWeaponItems.Count == 0) return;
+
+        ChooseUID = inventoryWeaponItems[0].uid;
+        foreach (InventorySlotItem inventorySlotItem in inventoryWeaponItems)
         {
-            Transform PackageUIItem = Instantiate(PackageUIItemPrefab.transform, scrollContent) as Transform;
-            PackageCell packageCell = PackageUIItem.GetComponent<PackageCell>();
-            packageCell.Refresh(packageLocalItem, this);
+            Transform PackageUIItem = Instantiate(InventorySlotUIPrefab.transform, scrollContent) as Transform;
+            InventorySlotView inventorySlot = PackageUIItem.GetComponent<InventorySlotView>();
+            inventorySlot.Refresh(inventorySlotItem, this);
         }
+    }
+
+    private void RefreshDetail()
+    {
+        if (_chooseUid == null) return;
+        InventorySlotItem chosenItem = GameManager.Instance.GetInventoryItemByUId(_chooseUid);
+        UIDetailCard.GetComponent<ItemDetailCard>().Refresh(chosenItem, this);
     }
 
     private void RefreshCount()
     {
-        UIWeaponCount.gameObject.GetComponent<Text>().text = "Weapon " + GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryWeaponType).Count().ToString() + "/" + maxWeaponCount.ToString();
+        UIWeaponCount.gameObject.GetComponent<Text>().text = "Weapon " + GameManager.Instance.GetInventorySlotItemsByType(GameConst.InventoryWeaponType).Count().ToString() + "/" + maxWeaponCount.ToString();
     }
 
     private void InitUIName()
@@ -234,12 +240,10 @@ public class PackagePanel : BasePanel
 
     private void onClickDeleteConfirm()
     {
-        print("<<<<<< onClickDeleteConfirm <<<<<<");
-        if (selectedDeleteUid == null)
-            return;
-        if (selectedDeleteUid.Count == 0) return;
-        GameManager.Instance.DeletePackageItems(this.selectedDeleteUid);
-        RefreshUI();
+        if (controller.DeleteItems(this.selectedDeleteUid))
+        {
+            RefreshUI();
+        }
     }
 
     private void onClickDelete()

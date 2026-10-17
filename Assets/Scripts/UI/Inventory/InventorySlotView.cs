@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PackageCell : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class InventorySlotView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Transform UIIcon;
     private Transform UICharacter;
@@ -15,9 +15,9 @@ public class PackageCell : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     private Transform UISelectAnimation;
     private Transform UIMouseOverAnimation;
 
-    private PackageLocalItem packageLocalItem;
+    private InventorySlotItem inventorySlotItem;
     private PackageTableItem packageTableItem;
-    private PackagePanel uiParent;
+    private InventoryPanel uiParent;
 
     private void Awake()
     {
@@ -47,17 +47,17 @@ public class PackageCell : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
         //UIMouseOverAnimation.gameObject.SetActive(false);
     }
 
-    public void Refresh(PackageLocalItem packageLocalItem, PackagePanel uiParent)
+    public void Refresh(InventorySlotItem inventorySlotItem, InventoryPanel uiParent)
     {
-        this.packageLocalItem = packageLocalItem;
-        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);
+        this.inventorySlotItem = inventorySlotItem;
+        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(inventorySlotItem.id);
         this.uiParent = uiParent;
 
         //Level info
-        UILevel.GetComponent<Text>().text = "Lv. " + this.packageLocalItem.level.ToString();
+        UILevel.GetComponent<Text>().text = "Lv. " + this.inventorySlotItem.level.ToString();
 
         //If it is new
-        UINew.gameObject.SetActive(this.packageLocalItem.isNew);
+        UINew.gameObject.SetActive(this.inventorySlotItem.isNew);
 
         //Image of the item
         Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
@@ -86,7 +86,7 @@ public class PackageCell : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
 
     public void RefreshDeleteState()
     {
-        if (uiParent.selectedDeleteUid.Contains(this.packageLocalItem.uid))
+        if (uiParent.selectedDeleteUid.Contains(this.inventorySlotItem.uid))
         {
             UIDeleteSelect.gameObject.SetActive(true);
         }
@@ -101,10 +101,10 @@ public class PackageCell : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
         UISelectAnimation.gameObject.SetActive(true);
         if (uiParent.curMode == PackageMode.delete)
         {
-            uiParent.AddSelectDeleteUid(this.packageLocalItem.uid);
+            uiParent.AddSelectDeleteUid(this.inventorySlotItem.uid);
         }
         UISelectAnimation.GetComponent<Animator>().SetTrigger("In");
-        uiParent.ChooseUID = this.packageLocalItem.uid;
+        uiParent.ChooseUID = this.inventorySlotItem.uid;
         Debug.Log("Mouse click");
     }
 

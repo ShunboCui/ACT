@@ -55,7 +55,7 @@ public class MainPanel : BasePanel
 
     private void OnClickInventory()
     {
-        UIManager.Instance.OpenPanel(UIConst.PackagePanel);
+        UIManager.Instance.OpenPanel(UIConst.InventoryPanel);
         this.ClosePanel();
     }
 

@@ -1,57 +1,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PackageLocalData
+public class InventorySlotData
 {
-    private PackageLocalData()
+    private InventorySlotData()
     {
         // Optional initialization, for example: items = new List<PackageLocalItem>();
     }
 
-    private static PackageLocalData _instance;
+    private static InventorySlotData _instance;
 
-    public static PackageLocalData Instance {
+    public static InventorySlotData Instance {
         get { 
             if (_instance == null)
             {
-                _instance = new PackageLocalData();
+                _instance = new InventorySlotData();
             }
             return _instance; 
         }
     }
 
-    public List<PackageLocalItem> items;
+    public List<InventorySlotItem> items;
 
-    public void SavePackage()
+    public void SaveInventory()
     {
         string inventoryJson = JsonUtility.ToJson(this);
-        PlayerPrefs.SetString("PackageLocalData", inventoryJson);
+        PlayerPrefs.SetString("InventorySaveData", inventoryJson);
         PlayerPrefs.Save();
     }
 
-    public List<PackageLocalItem> LoadPackage()
+    public List<InventorySlotItem> LoadInventory()
     {
         if (items != null)
         {
             return items;
         }
-        if (PlayerPrefs.HasKey("PackageLocalData"))
+        if (PlayerPrefs.HasKey("InventorySaveData"))
         {
-            string inventoryJson = PlayerPrefs.GetString("PackageLocalData");
-            PackageLocalData packageLocalData = JsonUtility.FromJson<PackageLocalData>(inventoryJson);
+            string inventoryJson = PlayerPrefs.GetString("InventorySaveData");
+            InventorySlotData packageLocalData = JsonUtility.FromJson<InventorySlotData>(inventoryJson);
             items = packageLocalData.items;
             return items;
         }
         else
         {
-            items = new List<PackageLocalItem>();
+            items = new List<InventorySlotItem>();
             return items;
         }
     }
 }
 
 [System.Serializable]
-public class PackageLocalItem
+public class InventorySlotItem
 {
     public string uid;
     public int id;
@@ -69,7 +69,7 @@ public class PackageLocalItem
     private int getLevel(int exp)
     {
         int res = 1;
-        res += (int)(exp / 100);
+        res += (int)(exp / 1000);
         return res;
     }
 }

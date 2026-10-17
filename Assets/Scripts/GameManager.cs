@@ -58,12 +58,13 @@ public class GameManager : MonoBehaviour
         return packageTable;
     }
 
-    public List<PackageLocalItem> GetLocalData()
+    /*
+    public List<InventorySlotItem> GetLocalData()
     {
-        List<PackageLocalItem> myList;
-        myList = PackageLocalData.Instance.LoadPackage();
+        List<InventorySlotItem> myList;
+        myList = InventorySlotData.Instance.LoadInventory();
         return myList;
-    }
+    }*/
 
     public PackageTableItem GetPackageTableItemById(int id)
     {
@@ -77,10 +78,11 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-    public PackageLocalItem GetPackageLocalItemByUId(string uid)
+
+    public InventorySlotItem GetInventoryItemByUId(string uid)
     {
-        List<PackageLocalItem> DataList = GetPackageLocalItems();
-        foreach (PackageLocalItem DataItem in DataList)
+        List<InventorySlotItem> DataList = GetInventorySaveData();
+        foreach (InventorySlotItem DataItem in DataList)
         {
             if (DataItem.uid == uid)
             {
@@ -90,16 +92,16 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public List<PackageLocalItem> GetPackageLocalItems()
+    public List<InventorySlotItem> GetInventorySaveData()
     {
-        return PackageLocalData.Instance.LoadPackage();
+        return InventorySlotData.Instance.LoadInventory();
     }
 
-    public List<PackageLocalItem> GetSortedPackageLocalItems()
+    public List<InventorySlotItem> GetSortedPackageLocalItems()
     {
-        List<PackageLocalItem> localItems = new List<PackageLocalItem>();
-        localItems = PackageLocalData.Instance.LoadPackage();
-        localItems.Sort(new PackageItemComparer());
+        List<InventorySlotItem> localItems = new List<InventorySlotItem>();
+        localItems = InventorySlotData.Instance.LoadInventory();
+        localItems.Sort(new InventoryItemComparer());
         return localItems;
 
     }
@@ -117,7 +119,7 @@ public class GameManager : MonoBehaviour
         return packageItems;
     }
 
-    public List<PackageLocalItem> GetPackageLocalItemsByType(int itemType)
+    public List<InventorySlotItem> GetInventorySlotItemsByType(int itemType)
     {
         List<PackageTableItem> tableItems = GetPackageTableByType(itemType);
         List<int> typeIds = new List<int>();
@@ -126,8 +128,8 @@ public class GameManager : MonoBehaviour
             typeIds.Add(tableItems[i].id);
         }
 
-        List <PackageLocalItem> localItems = GetPackageLocalItems();
-        List<PackageLocalItem> res = new List<PackageLocalItem>();
+        List <InventorySlotItem> localItems = GetInventorySaveData();
+        List<InventorySlotItem> res = new List<InventorySlotItem>();
         for (int i = 0; i < localItems.Count; i++) {
             if (typeIds.Contains(localItems[i].id)) {
                 res.Add(localItems[i]); 
@@ -137,34 +139,34 @@ public class GameManager : MonoBehaviour
         return res;
     }
 
-    public PackageLocalItem PullRandom()
+    public InventorySlotItem PullRandom()
     {
         List<PackageTableItem> packageItems = GetPackageTableByType(GameConst.InventoryWeaponType);
         int index = Random.Range(0, packageItems.Count);
         PackageTableItem randomItem = packageItems[index];
-        PackageLocalItem packageLocalItem = new PackageLocalItem() {
+        InventorySlotItem packageLocalItem = new InventorySlotItem() {
             uid = System.Guid.NewGuid().ToString(),
             id = randomItem.id,
             num = 1,
             exp = 0,
             isNew = true
         };
-        PackageLocalData.Instance.items.Add(packageLocalItem);
-        PackageLocalData.Instance.SavePackage();
+        InventorySlotData.Instance.items.Add(packageLocalItem);
+        InventorySlotData.Instance.SaveInventory();
         return packageLocalItem;
     }
 
-    public List<PackageLocalItem> PullRandom10()
+    public List<InventorySlotItem> PullRandom10()
     {
-        List<PackageLocalItem> packageLocalItems = new List<PackageLocalItem>();
+        List<InventorySlotItem> packageLocalItems = new List<InventorySlotItem>();
         for (int i = 0; i < 10; i++)
         {
-            PackageLocalItem packageLocalItem = PullRandom();
+            InventorySlotItem packageLocalItem = PullRandom();
             packageLocalItems.Add(packageLocalItem);
         }
         if (!sort)
         {
-            packageLocalItems.Sort(new PackageItemComparer());
+            packageLocalItems.Sort(new InventoryItemComparer());
         }
         return packageLocalItems;
     }
@@ -175,16 +177,30 @@ public class GameManager : MonoBehaviour
         {
             DeletePackageItem(uid);
         }
+        InventorySlotData.Instance.SaveInventory();
     }
 
     public void DeletePackageItem(string uid) {
-        PackageLocalItem deleteItem = GameManager.Instance.GetPackageLocalItemByUId(uid);
+        InventorySlotItem deleteItem = GameManager.Instance.GetInventoryItemByUId(uid);
         if (deleteItem == null)
         {
             return;
         }
-        PackageLocalData.Instance.items.Remove(deleteItem);
-        PackageLocalData.Instance.SavePackage();
+        InventorySlotData.Instance.items.Remove(deleteItem);
+    }
+
+    public void ModifyInventoryItemsAmount(Dictionary<string, int> itemPairs)
+    {
+        foreach (string uid in itemPairs.Keys)
+        {
+            ModifyInventoryItemAmount(uid, itemPairs[uid]);
+        }
+    }
+
+    public void ModifyInventoryItemAmount(string uid, int amount)
+    {
+        InventorySlotItem inventoryItem = InventorySlotData.Instance.items.Find(x => x.uid == uid);
+        inventoryItem.num -= amount;
     }
 
     public void MouseControl()
@@ -239,9 +255,9 @@ public class GameManager : MonoBehaviour
     }
 }
 
-public class PackageItemComparer : IComparer<PackageLocalItem>
+public class InventoryItemComparer : IComparer<InventorySlotItem>
 {
-    public int Compare(PackageLocalItem a, PackageLocalItem b)
+    public int Compare(InventorySlotItem a, InventorySlotItem b)
     {
         PackageTableItem x = GameManager.Instance.GetPackageTableItemById(a.id);
         PackageTableItem y = GameManager.Instance.GetPackageTableItemById(b.id);

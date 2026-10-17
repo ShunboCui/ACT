@@ -17,20 +17,20 @@ public class ItemDetailCard : MonoBehaviour
 
     private PackageTableItem packageTableItem;
 
-    private PackageLocalItem packageLocalItem;
+    private InventorySlotItem inventorySlotItem;
 
     private BasePanel uiParent;
 
     private void Awake()
     {
         InitUIName();
-        test();
+        //test();
     }
-
+    /*
     private void test()
     {
         Refresh(GameManager.Instance.GetPackageLocalItems()[3], null);
-    }
+    }*/
     private void InitUIName()
     {
         UIStars = transform.Find("Center/Stars");
@@ -42,14 +42,14 @@ public class ItemDetailCard : MonoBehaviour
     }
 
 
-    public void Refresh(PackageLocalItem packageLocalItem, BasePanel uiParent)
+    public void Refresh(InventorySlotItem inventorySlotItem, BasePanel uiParent)
     {
-        this.packageLocalItem = packageLocalItem;
-        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);
+        this.inventorySlotItem = inventorySlotItem;
+        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(inventorySlotItem.id);
         this.uiParent = uiParent;
 
         //Level info
-        UILevelText.GetComponent<Text>().text = "Lv. " + this.packageLocalItem.level.ToString();
+        UILevelText.GetComponent<Text>().text = "Lv. " + this.inventorySlotItem.level.ToString();
 
         //Description
         UIDescription.GetComponent<Text>().text = this.packageTableItem.description;
