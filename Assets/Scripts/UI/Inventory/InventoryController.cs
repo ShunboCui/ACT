@@ -28,23 +28,7 @@ public class InventoryController
     {
         List<InventorySlotItem> materials = GetItemsByType(GameConst.InventoryMaterialType);
 
-        // 第一步：先检查所有材料是否足够
-        foreach (var pair in materialUsage)
-        {
-            string uid = pair.Key;
-            int count = pair.Value;
-
-            if (count <= 0)
-                return false;
-
-            InventorySlotItem item =
-                materials.Find(x => x.uid == uid);
-
-            if (item == null || item.num < count)
-                return false;
-        }
-
-        // 第二步：检查通过后，统一扣除数量
+        // Reduce count
         foreach (var pair in materialUsage)
         {
             InventorySlotItem item =
@@ -53,9 +37,14 @@ public class InventoryController
             item.num -= pair.Value;
         }
 
-        // 第三步：移除数量为 0 的物品
+        // Remove all items with amount 0
         materials.RemoveAll(x => x.num <= 0);
 
         return true;
+    }
+
+    public void ConfirmWeaponEnhance(string weaponUid, int exp)
+    {
+        GameManager.Instance.GetInventoryItemByUId(weaponUid).exp += exp;
     }
 }

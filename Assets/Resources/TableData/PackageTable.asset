@@ -53,7 +53,7 @@ MonoBehaviour:
   - id: 4
     type: 0
     star: 1
-    name: Haran Geppaku Futsu
+    name: Musou Isshin
     description: cccccc
     skillsDescription: 'Obtain 12~24% All Elemental DMG Bonus. When other nearby
       party members use Elemental Skills, the character equipping this weapon will
@@ -61,7 +61,7 @@ MonoBehaviour:
       0.3s. When the character equipping this weapon uses an Elemental Skill, all
       stacks of Wavespike will be consumed to gain Rippling Upheaval: each stack
       of Wavespike consumed will increase Normal Attack DMG by 20~40% for 8s.'
-    imagePath: Image/UI/Weapon/Weapon_03
+    imagePath: Image/UI/Weapon/Weapon_04
     modelPath: Prefabs/Weapon/Katana
     expGain: 0
   - id: 5

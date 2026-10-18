@@ -69,7 +69,7 @@ public class InventorySlotItem
     private int getLevel(int exp)
     {
         int res = 1;
-        res += (int)(exp / 1000);
+        res += (int)(exp / 2000);
         return res;
     }
 }

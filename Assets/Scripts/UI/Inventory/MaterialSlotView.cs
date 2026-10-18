@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,12 +12,12 @@ public class MaterialSlotView : MonoBehaviour, IPointerClickHandler
     private PackageTableItem packageTableItem;
     private InventorySlotItem inventoryMaterialItem;
     private int selectedCount;
+    private int totalCount;
 
 
     private void Awake()
     {
         InitUI();
-        selectedCount = 0;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -53,19 +55,27 @@ public class MaterialSlotView : MonoBehaviour, IPointerClickHandler
         Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
         Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
         UIIcon.GetComponent<Image>().sprite = temp;
+        ResetCount();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (selectedCount >= totalCount) return;
+        selectedCount += 1;
+        uiParent.AddMaterialUidCount(inventoryMaterialItem.uid);
+        uiParent.totalExpGain += packageTableItem.expGain;
+        RefreshNumber();
+    }
+
+    private void ResetCount()
+    {
+        selectedCount = 0;
+        totalCount = inventoryMaterialItem.num;
         RefreshNumber();
     }
 
     private void RefreshNumber()
     {
         UICount.GetComponent<Text>().text = selectedCount.ToString() + "/" + inventoryMaterialItem.num.ToString();
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("Mouse click");
-        selectedCount += 1;
-        uiParent.selectedExp += 100;
-        RefreshNumber();
     }
 }

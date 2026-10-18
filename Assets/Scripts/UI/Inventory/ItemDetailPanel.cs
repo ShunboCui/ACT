@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,8 +20,9 @@ public class ItemDetailPanel : BasePanel
     private InventoryPanel packagePanel;
     private PackageTableItem packageTableItem;
     private InventorySlotItem chosenItem;
-    public int selectedExp;
     public GameObject MaterialItemPrefab;
+    public int totalExpGain;
+    public Dictionary<string, int> materialUidCountPair;
 
     private string _chooseUid;
 
@@ -123,10 +125,10 @@ public class ItemDetailPanel : BasePanel
     {
         UIDetailsLayer.gameObject.SetActive(false);
         UIEnhanceLayer.gameObject.SetActive(true);
-        RefreshMaterials();
+        RefreshMaterialSlots();
     }
 
-    private void RefreshMaterials()
+    private void RefreshMaterialSlots()
     {
         for (int i = 0; i < UIMaterialList.childCount; i++)
         {
@@ -144,21 +146,44 @@ public class ItemDetailPanel : BasePanel
         }
     }
 
-    private void SelectMaterial()
+    public void AddMaterialUidCount(string uid)
     {
+        if (materialUidCountPair == null)
+        {
+            materialUidCountPair = new Dictionary<string, int>();
+        }
 
+        if (materialUidCountPair.Count == 0 || !materialUidCountPair.ContainsKey(uid))
+        {
+            materialUidCountPair.Add(uid, 1);
+        }
+        else { materialUidCountPair[uid] += 1; }
+
+        foreach (var item in materialUidCountPair)
+        {
+            Debug.Log("Materials selected: " + item.Key.ToString() + "count: " + ((int)(item.Value)).ToString());
+        }
     }
 
     private void RefreshEnhanceLevel()
     {
-        selectedExp = 0;
+        totalExpGain = 0;
         UIEnhanceLevelLabel.GetComponent<Text>().text = "Level " + chosenItem.level.ToString();
     }
 
     private void ConfirmEnhance()
     {
-        GameManager.Instance.GetInventoryItemByUId(chosenItem.uid).exp += selectedExp;
-        RefreshMaterials();
+        controller.ConfirmWeaponEnhance(chosenItem.uid, totalExpGain);
+        controller.ConsumeMaterials(materialUidCountPair);
+        if (materialUidCountPair.Count > 0)
+        {
+            foreach (string uid in materialUidCountPair.Keys.ToList())
+            {
+                materialUidCountPair[uid] = 0;
+            }
+        }
+
+        RefreshMaterialSlots();
         RefreshEnhanceLevel();
         InventorySlotData.Instance.SaveInventory();
     }
