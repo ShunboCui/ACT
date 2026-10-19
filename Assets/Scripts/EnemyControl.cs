@@ -190,6 +190,7 @@ public class EnemyControl : MonoBehaviour
         {
             isDead = true;
             enemyAnimator.CrossFade("dead_02", 0.1f);
+            GetComponent<QuestEnemyContext>()?.ReportDeath();
             Destroy(this.gameObject, 3f);
         }
     }

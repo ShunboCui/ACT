@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 1386741492743006181}
   - component: {fileID: -69062076381994219}
   - component: {fileID: 2933944594403161697}
-  - component: {fileID: 2414661276762817377}
   - component: {fileID: 4939097969129085002}
+  - component: {fileID: 2414661276762817377}
+  - component: {fileID: 6982711101997500425}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -135,27 +136,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2414661276762817377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2418325142191418719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fde09aabbf5c80441b8f3b5383f4b8d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyControl
-  player: {fileID: 0}
-  AudioSource: {fileID: 4939097969129085002}
-  AttackVolume: 0.5
-  EnemyAttackSound: {fileID: 8300000, guid: de08e00a43f0d0344abe164ed5525627, type: 3}
-  searchRange: 50
-  attackRange: 3
-  maxHP: 100
-  DealDamageArea: {fileID: 3171434366354416881}
-  TakeDamageEffect: {fileID: 1227413328308671116, guid: 3da1d6d1234da5641ad363e586487bee, type: 3}
 --- !u!82 &4939097969129085002
 AudioSource:
   m_ObjectHideFlags: 0
@@ -253,6 +233,39 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2414661276762817377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2418325142191418719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde09aabbf5c80441b8f3b5383f4b8d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyControl
+  player: {fileID: 0}
+  AudioSource: {fileID: 4939097969129085002}
+  AttackVolume: 0.5
+  EnemyAttackSound: {fileID: 8300000, guid: de08e00a43f0d0344abe164ed5525627, type: 3}
+  searchRange: 50
+  attackRange: 3
+  maxHP: 100
+  DealDamageArea: {fileID: 3171434366354416881}
+  TakeDamageEffect: {fileID: 1227413328308671116, guid: 3da1d6d1234da5641ad363e586487bee, type: 3}
+--- !u!114 &6982711101997500425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2418325142191418719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4c934d733397e47a83365637d03984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestEnemyContext
 --- !u!1 &2952934697095649280
 GameObject:
   m_ObjectHideFlags: 0
