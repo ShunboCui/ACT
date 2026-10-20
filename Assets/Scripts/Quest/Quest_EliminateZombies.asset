@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestDefinition
   questId: EliminateZombies
   questName: Eliminate all the zombies
-  description: A group of zombies showed up. Please wipe them out.
+  description: A group of zombies showed up. Wipe them out.
   targetEnemyId: zombie
   requiredKills: 3
   rewardExp: 100

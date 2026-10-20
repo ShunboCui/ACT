@@ -23,7 +23,7 @@ public class EnemyControl : MonoBehaviour
     //Attack sound
     public float AttackVolume = .8f;
     public AudioClip EnemyAttackSound;
-    public float searchRange = 50.0f;
+    public float searchRange;
     public float attackRange = 3.0f;
     public float maxHP = 100.0f;
     public GameObject DealDamageArea;
@@ -87,10 +87,10 @@ public class EnemyControl : MonoBehaviour
             switch (currentState)
             {
                 case EnemyState.idle:
+                    this.agent.isStopped = true;
                     this.enemyAnimator.Play("MoveTree");
                     this.enemyAnimator.SetFloat("Speed", 0f);
                     this.enemyAnimator.SetBool("Attacking", false);
-                    this.agent.isStopped = true;
 
                     if (playerDistance <= searchRange && playerDistance > attackRange)
                     {

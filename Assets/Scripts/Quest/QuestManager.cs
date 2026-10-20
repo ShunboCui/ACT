@@ -10,13 +10,16 @@ public class QuestRuntimeState
     public int killCount;
 }
 
-public class QuestManager
+public class QuestManager : MonoBehaviour
 {
     public event Action<QuestDefinition> OnQuestAccepted;
     public event Action<QuestRuntimeState> OnProgressChanged;
     public event Action<QuestDefinition> OnQuestCompleted;
     private readonly Dictionary<string, QuestRuntimeState> states
         = new Dictionary<string, QuestRuntimeState>();
+
+    [SerializeField]
+    QuestDefinition testQuest;
 
     public bool TryGetState(
         QuestDefinition quest,
@@ -95,5 +98,10 @@ public class QuestManager
     {
         // 例如：增加 quest.rewardExp 经验值；
         // 需要物品奖励时，再调用你的背包管理器。
+    }
+
+    private void Start()
+    {
+        AcceptQuest(testQuest);
     }
 }

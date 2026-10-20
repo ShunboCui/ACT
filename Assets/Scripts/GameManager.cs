@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
             IsGamePaused = true;
         }
 
-        WinUIControl();
+        //WinUIControl();
         enemyList = GameObject.FindGameObjectsWithTag("Enemy");
     }
 

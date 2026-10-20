@@ -97,7 +97,7 @@ Rigidbody:
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0.5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -249,7 +249,7 @@ MonoBehaviour:
   AudioSource: {fileID: 4939097969129085002}
   AttackVolume: 0.5
   EnemyAttackSound: {fileID: 8300000, guid: de08e00a43f0d0344abe164ed5525627, type: 3}
-  searchRange: 50
+  searchRange: 30
   attackRange: 3
   maxHP: 100
   DealDamageArea: {fileID: 3171434366354416881}
