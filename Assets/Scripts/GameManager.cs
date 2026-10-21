@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEngine.Analytics.IAnalytic;
 
 public class GameManager : MonoBehaviour
@@ -36,7 +37,8 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         MouseControl();
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Keyboard.current != null &&
+            Keyboard.current.bKey.wasPressedThisFrame)
         {
             UIManager.Instance.OpenPanel("MainPanel");
             Time.timeScale = 0f;
