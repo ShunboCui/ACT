@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEditor;
 using UnityEngine;
 
@@ -72,5 +73,17 @@ public class GMCmd
         //WeaponController.Instance.EquipWeapon(GameObject.Find("Player").GetComponent<PlayerControl>().Lions_Roar_Data);
         PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(5);
         WeaponController.Instance.EquipWeapon(packageTableItem);
+    }
+
+    [MenuItem("GMCmd/Stop camera")]
+    public static void StopCamera()
+    {
+        GameManager.Instance.StopCamera();
+    }
+
+    [MenuItem("GMCmd/Start camera")]
+    public static void StartCamera()
+    {
+        GameManager.Instance.StartCamera();
     }
 }

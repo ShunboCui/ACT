@@ -7,8 +7,9 @@ public class UIManager
     private static UIManager _instance;
     private Transform _UIRoot;
     private Dictionary<string, string> pathDict;
-    public Dictionary<string, BasePanel> panelDict;
+    public Dictionary<string, BasePanel> openedPanelDict;
     private Dictionary<string, GameObject> prefabDict;
+    private const string prefabPath = "Prefabs/Panels/";
 
     public static UIManager Instance
     {
@@ -48,7 +49,7 @@ public class UIManager
     private void InitDicts()
     {
         prefabDict = new Dictionary<string, GameObject>();
-        panelDict = new Dictionary<string, BasePanel>();
+        openedPanelDict = new Dictionary<string, BasePanel>();
         pathDict = new Dictionary<string, string>()
         {
             {UIConst.InventoryPanel, "Inventory/InventoryPanel" },
@@ -56,14 +57,15 @@ public class UIManager
             {UIConst.MainPanel, "MainPanel" },
             {UIConst.VictoryPanel, "VictoryMenu" },
             {UIConst.DeadMenu, "DeadMenu" },
-            {UIConst.ItemDetailPanel, "Inventory/ItemDetailPanel" }
+            {UIConst.ItemDetailPanel, "Inventory/ItemDetailPanel" },
+            {UIConst.DialoguePanel, "DialoguePanel" }
         };
     }
 
     public BasePanel GetPanel(string name)
     {
         BasePanel panel = null;
-        if (panelDict.TryGetValue(name, out panel))
+        if (openedPanelDict.TryGetValue(name, out panel))
         {
             return panel;
         }
@@ -73,7 +75,7 @@ public class UIManager
     public BasePanel OpenPanel(string name)
     {
         BasePanel panel = null;
-        if (panelDict.TryGetValue(name, out panel))
+        if (openedPanelDict.TryGetValue(name, out panel))
         {
             Debug.Log("Panel already opened: " +  name);
             return null;
@@ -89,7 +91,7 @@ public class UIManager
         GameObject panelPrefab = null;
         if (!prefabDict.TryGetValue(name, out panelPrefab))
         {
-            string realPath = "Prefabs/Panels/" + path;
+            string realPath = prefabPath + path;
             panelPrefab = Resources.Load<GameObject>(realPath);
             prefabDict.Add(name, panelPrefab);
         }
@@ -98,7 +100,7 @@ public class UIManager
         Debug.Log("Instantiate completed");
         panel = panelObject.GetComponent<BasePanel>();
         panel.OpenPanel(name);
-        panelDict.Add(name, panel);
+        openedPanelDict.Add(name, panel);
         //
 
         //Time.timeScale = 0f;
@@ -109,7 +111,8 @@ public class UIManager
 
     public bool ClosePanel(string name) {
         BasePanel panel = null;
-        if (!panelDict.TryGetValue(name, out panel))
+        Debug.Log(openedPanelDict.ToString() + "Length: " + openedPanelDict.Count);
+        if (!openedPanelDict.TryGetValue(name, out panel))
         {
             Debug.LogError("Panel not opened: " + name);
             return false;
@@ -128,5 +131,6 @@ public class UIConst
     public const string VictoryPanel = "VictoryMenu";
     public const string DeadMenu = "DeadMenu";
     public const string ItemDetailPanel = "ItemDetailPanel";
+    public const string DialoguePanel = "DialoguePanel";
 
 }

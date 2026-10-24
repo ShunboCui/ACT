@@ -13,7 +13,7 @@ public class BasePanel : MonoBehaviour
 
     }
 
-    public virtual void OpenPanel(string name)
+    public void OpenPanel(string name)
     {
         this.name = name;
         this.SetActive(true);
@@ -24,13 +24,13 @@ public class BasePanel : MonoBehaviour
         gameObject.SetActive(active);
     }
 
-    public virtual void ClosePanel()
+    public void ClosePanel()
     {
         //isRemove = true;
         this.SetActive(false);
         Destroy(gameObject);
-        if (UIManager.Instance.panelDict.ContainsKey(name)) {
-            UIManager.Instance.panelDict.Remove(name);
+        if (UIManager.Instance.openedPanelDict.ContainsKey(name)) {
+            UIManager.Instance.openedPanelDict.Remove(name);
         }
     }
 

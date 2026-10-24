@@ -15,6 +15,8 @@ public class DialogueManager : MonoBehaviour
     private DialogueData currentDialogue;
     private int currentLineIndex;
     private float previousTimeScale;
+    public PlayerControl playerControl;
+    public DialoguePanel currentDialoguePanel;
 
     private void Awake()
     {
@@ -57,7 +59,7 @@ public class DialogueManager : MonoBehaviour
         onAcceptQuest = acceptQuestCallback;
 
         previousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         IsOpen = true;
 
         // Open DialoguePanel through your existing UIRoot /
@@ -78,7 +80,6 @@ public class DialogueManager : MonoBehaviour
             CloseDialogue();
             return;
         }
-
         RefreshDialoguePanel();
     }
 
@@ -113,6 +114,10 @@ public class DialogueManager : MonoBehaviour
     {
         // Integration point: open the DialoguePanel through
         // your existing panel manager and obtain its component.
+        UIManager.Instance.OpenPanel("DialoguePanel");
+        playerControl.attackEnabled = false;
+        GameManager.Instance.UnlockMouse();
+        GameManager.Instance.StopCamera();
     }
 
     private void RefreshDialoguePanel()
@@ -121,12 +126,20 @@ public class DialogueManager : MonoBehaviour
         // currentDialogue.speakerName
         // currentDialogue.lines[currentLineIndex]
         // whether this is the final line
+
+        //DialoguePanel currentPanel = UIManager.Instance.GetPanel("DialoguePanel") as DialoguePanel;
+        currentDialoguePanel.RefreshDialogue(currentDialogue.speakerName, currentDialogue.lines[currentLineIndex]);
     }
 
-    private void CloseDialoguePanel()
+    public void CloseDialoguePanel()
     {
         // Integration point: close the panel through your
         // existing panel manager.
+        UIManager.Instance.ClosePanel("DialoguePanel");
+        playerControl.attackEnabled = true;
+        GameManager.Instance.LockMouse();
+        GameManager.Instance.StartCamera();
+        currentDialoguePanel = null;
     }
 
 }

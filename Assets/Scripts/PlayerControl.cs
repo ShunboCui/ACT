@@ -68,6 +68,7 @@ public class PlayerControl : MonoBehaviour
     //public GameObject deadUI;
     public WeaponController weaponController;
     public int initialWeaponId = 2;
+    public bool attackEnabled;
 
     private void Awake()
     {
@@ -83,6 +84,7 @@ public class PlayerControl : MonoBehaviour
         //playerMaxHealth = this.transform.Find("Canvas/MaxHP").gameObject.GetComponent<Text>();
         playerHealth = GetComponent<PlayerHealth>();
         //LastAttackTime = Time.time;
+        attackEnabled = true;
     }
 
     private void OnEnable()
@@ -184,6 +186,11 @@ public class PlayerControl : MonoBehaviour
 
     private void DoAttack()
     {
+        if (!attackEnabled)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             AttackPressed = true;

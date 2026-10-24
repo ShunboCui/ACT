@@ -1,5 +1,7 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.Analytics.IAnalytic;
@@ -13,6 +15,8 @@ public class GameManager : MonoBehaviour
     public GameObject winUI;
     public bool IsGamePaused;
     private bool win = false;
+
+    public Transform playerCamera;
 
     public static GameManager Instance {
         get {
@@ -144,7 +148,7 @@ public class GameManager : MonoBehaviour
     public InventorySlotItem PullRandom()
     {
         List<PackageTableItem> packageItems = GetPackageTableByType(GameConst.InventoryWeaponType);
-        int index = Random.Range(0, packageItems.Count);
+        int index = UnityEngine.Random.Range(0, packageItems.Count);
         PackageTableItem randomItem = packageItems[index];
         InventorySlotItem packageLocalItem = new InventorySlotItem() {
             uid = System.Guid.NewGuid().ToString(),
@@ -254,6 +258,16 @@ public class GameManager : MonoBehaviour
         UnlockMouse();
         UIManager.Instance.OpenPanel("VictoryMenu");
         Time.timeScale = 0f;
+    }
+
+    public void StopCamera()
+    {
+        playerCamera.GetComponent<CinemachineCamera>().enabled = false;
+    }
+
+    public void StartCamera()
+    {
+        playerCamera.GetComponent<CinemachineCamera>().enabled = true;
     }
 }
 

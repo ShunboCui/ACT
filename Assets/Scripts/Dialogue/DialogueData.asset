@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: DialogueData
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   speakerName: 
-  lines: []
+  lines:
+  - Hello
+  - World

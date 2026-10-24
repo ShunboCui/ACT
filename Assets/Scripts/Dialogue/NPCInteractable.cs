@@ -35,7 +35,7 @@ public class NPCInteractable : MonoBehaviour
             return;
 
         if (Keyboard.current != null &&
-            Keyboard.current.eKey.wasPressedThisFrame)
+            Keyboard.current.fKey.wasPressedThisFrame)
         {
             DialogueManager.Instance.StartDialogue(dialogueData);
         }
