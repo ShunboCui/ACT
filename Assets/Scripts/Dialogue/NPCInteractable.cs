@@ -15,13 +15,20 @@ public class NPCInteractable : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
+        {
             playerInRange = true;
+            UIManager.Instance.BindInteractionButton(dialogueData);
+            UIManager.Instance.EnableInteractionButton();
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
+        {
             playerInRange = false;
+            UIManager.Instance.DisableInteractionButton();
+        }
     }
 
     // Update is called once per frame
@@ -38,6 +45,7 @@ public class NPCInteractable : MonoBehaviour
             Keyboard.current.fKey.wasPressedThisFrame)
         {
             DialogueManager.Instance.StartDialogue(dialogueData);
+            UIManager.Instance.DisableInteractionButton();
         }
     }
 }

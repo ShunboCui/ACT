@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class UIManager
+public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
     private Transform _UIRoot;
@@ -11,15 +12,24 @@ public class UIManager
     private Dictionary<string, GameObject> prefabDict;
     private const string prefabPath = "Prefabs/Panels/";
 
+    [SerializeField] Transform InteractionButton;
+
     public static UIManager Instance
     {
-        get { 
-            if (_instance == null)
-            {
-                _instance = new UIManager();
-            }
+        get {
             return _instance;
         }
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
     }
 
     public Transform UIRoot
@@ -120,6 +130,23 @@ public class UIManager
         //Time.timeScale = 1f;
         panel.ClosePanel();
         return true;
+    }
+
+    public void EnableInteractionButton()
+    {
+        InteractionButton.gameObject.SetActive(true);
+    }
+
+    public void DisableInteractionButton()
+    {
+        InteractionButton.gameObject.SetActive(false);
+    }
+
+    public void BindInteractionButton(DialogueData dialogueData)
+    {
+        Button button = InteractionButton.gameObject.GetComponent<Button>();
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => DialogueManager.Instance.StartDialogue(dialogueData));
     }
 }
 
