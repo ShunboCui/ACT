@@ -8,15 +8,30 @@ public class EnemyAttackState : EnemyBaseState
 
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        enemyControl.agent.isStopped = true;
     }
+
     public override void Tick(float deltaTime)
     {
-        throw new System.NotImplementedException();
+
+        enemyControl.EnemyAttack();
+
+        if (enemyControl.playerDistance > enemyControl.attackRange)
+        {
+            enemyStateMachine.SwitchState(enemyStateMachine.enemyMoveState);
+        }
+        else if (enemyControl.playerDistance > enemyControl.searchRange)
+        {
+            enemyStateMachine.SwitchState(enemyStateMachine.enemyIdleState);
+        }
+        else
+        {
+            enemyStateMachine.SwitchState(enemyStateMachine.enemyAttackState);
+        }
     }
+
     public override void Exit()
     {
-        throw new System.NotImplementedException();
     }
 
 }

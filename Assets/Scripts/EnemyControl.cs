@@ -12,12 +12,12 @@ public enum EnemyState
 public class EnemyControl : MonoBehaviour
 {
     private EnemyState currentState = EnemyState.idle;
-    private Animator enemyAnimator;
+    public Animator enemyAnimator;
     private EnemyStateMachine enemyStateMachine;
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     private float currentHP = 100.0f;
     private bool isDead = false;
-    private float playerDistance;
+    public float playerDistance;
 
     public Transform player;
     public AudioSource AudioSource;
@@ -40,6 +40,7 @@ public class EnemyControl : MonoBehaviour
 
     private void Awake()
     {
+        agent = gameObject.GetComponent<NavMeshAgent>();
         enemyStateMachine = new EnemyStateMachine(this);
     }
 
@@ -47,8 +48,7 @@ public class EnemyControl : MonoBehaviour
     void Start()
     {
         currentHP = maxHP;
-        enemyAnimator = this.GetComponent<Animator>();
-        agent = this.GetComponent<NavMeshAgent>();
+        enemyAnimator = gameObject.GetComponent<Animator>();
         playerDamage = GameObject.FindWithTag("Player").GetComponent<PlayerControl>().playerDamage;
         player = GameObject.FindWithTag("Player").transform;
         TakeDamageEffectPosition = this.transform.Find("EnemyGetHitEffectPosition");
@@ -61,8 +61,12 @@ public class EnemyControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        enemyStateMachine.Update();
-        EnemyStateController();
+        playerDistance = Vector3.Distance(this.transform.position, this.player.position);
+        if (!isDead)
+        {
+            enemyStateMachine.Update();
+        }
+        //EnemyStateController();
         Dead();
         UIControl();
     }
@@ -76,7 +80,7 @@ public class EnemyControl : MonoBehaviour
         }
     }
 
-    private void FaceToPlayer()
+    public void FaceToPlayer()
     {
         if (!isDead)
         {
@@ -90,7 +94,6 @@ public class EnemyControl : MonoBehaviour
     {
         if (!isDead)
         {
-            playerDistance = Vector3.Distance(this.transform.position, this.player.position);
             switch (currentState)
             {
                 case EnemyState.idle:
@@ -143,7 +146,7 @@ public class EnemyControl : MonoBehaviour
         }
     }
 
-    private void EnemyAttack()
+    public void EnemyAttack()
     {
         if (enemyAnimator.GetBool("Attacking"))
         {

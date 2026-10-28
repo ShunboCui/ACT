@@ -8,15 +8,23 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        enemyControl.agent.isStopped = true;
+        enemyControl.enemyAnimator.Play("MoveTree");
+        enemyControl.enemyAnimator.SetFloat("Speed", 0f);
+        enemyControl.enemyAnimator.SetBool("Attacking", false);
     }
     public override void Tick(float deltaTime)
     {
-        throw new System.NotImplementedException();
+
+        if (enemyControl.playerDistance <= enemyControl.searchRange && enemyControl.playerDistance > enemyControl.attackRange)
+        {
+            enemyStateMachine.SwitchState(enemyStateMachine.enemyMoveState);
+            return;
+        }
     }
+
     public override void Exit()
     {
-        throw new System.NotImplementedException();
     }
 
 }
