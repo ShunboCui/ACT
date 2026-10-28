@@ -13,6 +13,7 @@ public class EnemyControl : MonoBehaviour
 {
     private EnemyState currentState = EnemyState.idle;
     private Animator enemyAnimator;
+    private EnemyStateMachine enemyStateMachine;
     private NavMeshAgent agent;
     private float currentHP = 100.0f;
     private bool isDead = false;
@@ -37,6 +38,11 @@ public class EnemyControl : MonoBehaviour
         get { return isDead; }
     }
 
+    private void Awake()
+    {
+        enemyStateMachine = new EnemyStateMachine(this);
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -55,6 +61,7 @@ public class EnemyControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        enemyStateMachine.Update();
         EnemyStateController();
         Dead();
         UIControl();
