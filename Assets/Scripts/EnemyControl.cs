@@ -40,15 +40,15 @@ public class EnemyControl : MonoBehaviour
 
     private void Awake()
     {
+        enemyAnimator = gameObject.GetComponent<Animator>();
         agent = gameObject.GetComponent<NavMeshAgent>();
-        enemyStateMachine = new EnemyStateMachine(this);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currentHP = maxHP;
-        enemyAnimator = gameObject.GetComponent<Animator>();
+        enemyStateMachine = new EnemyStateMachine(this);
         playerDamage = GameObject.FindWithTag("Player").GetComponent<PlayerControl>().playerDamage;
         player = GameObject.FindWithTag("Player").transform;
         TakeDamageEffectPosition = this.transform.Find("EnemyGetHitEffectPosition");

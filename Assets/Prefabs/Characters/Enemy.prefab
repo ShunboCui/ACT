@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde09aabbf5c80441b8f3b5383f4b8d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyControl
-  enemyAnimator: {fileID: 2278907094480206494}
-  agent: {fileID: 2933944594403161697}
+  enemyAnimator: {fileID: 0}
+  agent: {fileID: 0}
   playerDistance: 0
   player: {fileID: 0}
   AudioSource: {fileID: 4939097969129085002}
