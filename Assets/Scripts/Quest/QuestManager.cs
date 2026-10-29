@@ -12,14 +12,30 @@ public class QuestRuntimeState
 
 public class QuestManager : MonoBehaviour
 {
+    public static QuestManager Instance { get; private set; }
     public event Action<QuestDefinition> OnQuestAccepted;
     public event Action<QuestRuntimeState> OnProgressChanged;
     public event Action<QuestDefinition> OnQuestCompleted;
     private readonly Dictionary<string, QuestRuntimeState> states
         = new Dictionary<string, QuestRuntimeState>();
 
-    [SerializeField]
-    QuestDefinition testQuest;
+    //[SerializeField]
+    //QuestDefinition testQuest;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        //AcceptQuest(testQuest);
+    }
 
     public bool TryGetState(
         QuestDefinition quest,
@@ -98,10 +114,5 @@ public class QuestManager : MonoBehaviour
     {
         // 例如：增加 quest.rewardExp 经验值；
         // 需要物品奖励时，再调用你的背包管理器。
-    }
-
-    private void Start()
-    {
-        AcceptQuest(testQuest);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class DialoguePanel : BasePanel
 {
+    private Transform AcceptQuestButton;
     private Transform CloseButton;
     private Transform CharacterName;
     private Transform DialogueLine;
@@ -37,6 +38,7 @@ public class DialoguePanel : BasePanel
 
     private void InitUIName()
     {
+        AcceptQuestButton = transform.Find("BottomRight/AcceptQuestButton");
         CloseButton = transform.Find("BottomRight/CloseButton");
         CharacterName = transform.Find("TopLeft/CharacterNameText");
         DialogueLine = transform.Find("Center/DialogueLine");
@@ -45,6 +47,7 @@ public class DialoguePanel : BasePanel
 
     private void InitClick()
     {
+        AcceptQuestButton.GetComponent<Button>().onClick.AddListener(DialogueManager.Instance.AcceptQuest);
         CloseButton.GetComponent<Button>().onClick.AddListener(DialogueManager.Instance.CloseDialogue);
         NextLine.GetComponent<Button>().onClick.AddListener(DialogueManager.Instance.NextLine);
     }

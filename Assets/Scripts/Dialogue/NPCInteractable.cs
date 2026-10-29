@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class NPCInteractable : MonoBehaviour
 {
     [SerializeField] private DialogueData dialogueData;
+    [SerializeField] private QuestDefinition questDefinition;
     private bool playerInRange;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -17,7 +18,7 @@ public class NPCInteractable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            UIManager.Instance.BindInteractionButton(dialogueData);
+            UIManager.Instance.BindInteractionButton(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition));
             UIManager.Instance.EnableInteractionButton();
         }
     }
@@ -44,7 +45,7 @@ public class NPCInteractable : MonoBehaviour
         if (Keyboard.current != null &&
             Keyboard.current.fKey.wasPressedThisFrame)
         {
-            DialogueManager.Instance.StartDialogue(dialogueData);
+            DialogueManager.Instance.StartDialogue(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition));
             UIManager.Instance.DisableInteractionButton();
         }
     }

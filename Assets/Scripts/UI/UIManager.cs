@@ -142,11 +142,11 @@ public class UIManager : MonoBehaviour
         InteractionButton.gameObject.SetActive(false);
     }
 
-    public void BindInteractionButton(DialogueData dialogueData)
+    public void BindInteractionButton(DialogueData dialogueData, Func<bool> acceptQuest)
     {
         Button button = InteractionButton.gameObject.GetComponent<Button>();
         button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => DialogueManager.Instance.StartDialogue(dialogueData));
+        button.onClick.AddListener(() => DialogueManager.Instance.StartDialogue(dialogueData, acceptQuest));
     }
 }
 

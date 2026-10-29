@@ -388,6 +388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCInteractable
   dialogueData: {fileID: 11400000, guid: b04e28c4baa477548b7e4c215381e035, type: 2}
+  questDefinition: {fileID: 11400000, guid: e83088b9e1c609d4989d2fa9fa6e519d, type: 2}
 --- !u!136 &384737132
 CapsuleCollider:
   m_ObjectHideFlags: 0

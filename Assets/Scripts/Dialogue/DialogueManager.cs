@@ -10,7 +10,7 @@ public class DialogueManager : MonoBehaviour
 
 
     // Optional callback for quest acceptance.
-    private Action onAcceptQuest;
+    private Func<bool> onAcceptQuest;
 
     private DialogueData currentDialogue;
     private int currentLineIndex;
@@ -48,7 +48,7 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(
         DialogueData data,
-        Action acceptQuestCallback = null)
+        Func<bool> acceptQuestCallback = null)
     {
         if (IsOpen || data == null ||
             data.lines == null || data.lines.Count == 0)
@@ -88,10 +88,17 @@ public class DialogueManager : MonoBehaviour
         if (!IsOpen || onAcceptQuest == null)
             return;
 
-        onAcceptQuest.Invoke();
-        CloseDialogue();
-    }
+        bool accepted = onAcceptQuest.Invoke();
 
+        if (accepted)
+        {
+            CloseDialogue();
+        }
+        else
+        {
+            Debug.Log("任务接取失败，可能已经接取过该任务。");
+        }
+    }
 
     public void CloseDialogue()
     {
