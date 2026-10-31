@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a9eaf829b23033479a986c6cd869935, type: 3}
   m_Name: DialogueData
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
-  speakerName: 
+  speakerName: Quest NPC
   lines:
   - Hello
   - World

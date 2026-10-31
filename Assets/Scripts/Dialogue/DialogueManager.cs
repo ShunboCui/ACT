@@ -11,6 +11,7 @@ public class DialogueManager : MonoBehaviour
 
     // Optional callback for quest acceptance.
     private Func<bool> onAcceptQuest;
+    private Func<bool> onCompleteQuest;
 
     private DialogueData currentDialogue;
     private int currentLineIndex;
@@ -48,7 +49,8 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(
         DialogueData data,
-        Func<bool> acceptQuestCallback = null)
+        Func<bool> acceptQuestCallback = null,
+        Func<bool> completeQuestCallback = null)
     {
         if (IsOpen || data == null ||
             data.lines == null || data.lines.Count == 0)
@@ -57,6 +59,7 @@ public class DialogueManager : MonoBehaviour
         currentDialogue = data;
         currentLineIndex = 0;
         onAcceptQuest = acceptQuestCallback;
+        onCompleteQuest = completeQuestCallback;
 
         previousTimeScale = Time.timeScale;
         //Time.timeScale = 0f;
@@ -102,6 +105,23 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Debug.Log("Failed to accept quest, might already been accepted.");
+        }
+    }
+
+    public void CompleteQuest()
+    {
+        if (!IsOpen || onCompleteQuest == null)
+            return;
+
+        bool completed = onCompleteQuest.Invoke();
+
+        if (completed)
+        {
+            CloseDialogue();
+        }
+        else
+        {
+            Debug.Log("Failed to complete quest.");
         }
     }
 

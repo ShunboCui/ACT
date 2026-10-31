@@ -45,7 +45,7 @@ public class NPCInteractable : MonoBehaviour
         if (Keyboard.current != null &&
             Keyboard.current.fKey.wasPressedThisFrame)
         {
-            DialogueManager.Instance.StartDialogue(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition));
+            DialogueManager.Instance.StartDialogue(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition), ()=> QuestManager.Instance.CompleteQuest(questDefinition));
             UIManager.Instance.DisableInteractionButton();
         }
     }

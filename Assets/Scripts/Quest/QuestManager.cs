@@ -88,6 +88,7 @@ public class QuestManager : MonoBehaviour
             state.status = QuestStatus.ReadyToTurnIn;
         }
 
+        Debug.Log("Current kill count: " + state.killCount + " current quest state: " + state.status);
         OnProgressChanged?.Invoke(state);
     }
 
@@ -107,6 +108,7 @@ public class QuestManager : MonoBehaviour
         OnQuestCompleted?.Invoke(quest);
         OnProgressChanged?.Invoke(state);
 
+        Debug.Log("Current quest state: " + state.status);
         return true;
     }
 
