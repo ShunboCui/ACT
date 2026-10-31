@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,7 +23,7 @@ public class DialoguePanel : BasePanel
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        DisableButtons();
     }
 
     // Update is called once per frame
@@ -56,5 +58,35 @@ public class DialoguePanel : BasePanel
     {
         CharacterName.GetComponent<TextMeshProUGUI>().text = speakerName;
         DialogueLine.GetComponent<TextMeshProUGUI>().text = currentLine;
+    }
+
+    public void EnableButtons()
+    {
+        List<GameObject> buttons = new List<GameObject>() {
+            AcceptQuestButton.gameObject, CloseButton.gameObject
+        };
+
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i] != null)
+            {
+                buttons[i].SetActive(true);
+            }
+        }
+    }
+
+    public void DisableButtons()
+    {
+        List<GameObject> buttons = new List<GameObject>() {
+            AcceptQuestButton.gameObject, CloseButton.gameObject
+        };
+
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (buttons[i] != null)
+            {
+                buttons[i].SetActive(false);
+            }
+        }
     }
 }

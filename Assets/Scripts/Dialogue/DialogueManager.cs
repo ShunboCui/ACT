@@ -75,6 +75,11 @@ public class DialogueManager : MonoBehaviour
 
         currentLineIndex++;
 
+        if (currentLineIndex == currentDialogue.lines.Count - 1)
+        {
+            currentDialoguePanel.EnableButtons();
+        }
+
         if (currentLineIndex >= currentDialogue.lines.Count)
         {
             CloseDialogue();
@@ -96,7 +101,7 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("任务接取失败，可能已经接取过该任务。");
+            Debug.Log("Failed to accept quest, might already been accepted.");
         }
     }
 
