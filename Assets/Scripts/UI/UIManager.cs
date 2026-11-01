@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
         }
 
         _instance = this;
+        InitDicts();
     }
 
     public Transform UIRoot
@@ -49,11 +50,6 @@ public class UIManager : MonoBehaviour
             }
             return (_UIRoot);
         }
-    }
-
-    private UIManager()
-    {
-        InitDicts();
     }
 
     private void InitDicts()

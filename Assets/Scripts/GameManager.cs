@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
     {
         MouseControl();
         if (Keyboard.current != null &&
-            Keyboard.current.bKey.wasPressedThisFrame)
+            Keyboard.current.tabKey.wasPressedThisFrame)
         {
             UIManager.Instance.OpenPanel("MainPanel");
             Time.timeScale = 0f;
