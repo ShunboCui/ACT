@@ -57,6 +57,19 @@ public class DialoguePanel : BasePanel
         NextLine.GetComponent<Button>().onClick.AddListener(DialogueManager.Instance.NextLine);
     }
 
+    // Esc / back: end the conversation, same as the close button.
+    protected override void OnBack()
+    {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsOpen)
+        {
+            DialogueManager.Instance.CloseDialogue();
+        }
+        else
+        {
+            ClosePanel();
+        }
+    }
+
     public void RefreshDialogue(string speakerName, string currentLine)
     {
         CharacterName.GetComponent<TextMeshProUGUI>().text = speakerName;

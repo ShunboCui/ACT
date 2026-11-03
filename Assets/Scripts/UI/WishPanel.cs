@@ -50,6 +50,12 @@ public class WishPanel : BasePanel
         TenPullsButton.GetComponent<Button>().onClick.AddListener(OnClickTenPull);
     }
 
+    // Esc / back: same as the close button (returns to the main menu).
+    protected override void OnBack()
+    {
+        OnClickClose();
+    }
+
     private void OnClickClose()
     {
         this.ClosePanel();

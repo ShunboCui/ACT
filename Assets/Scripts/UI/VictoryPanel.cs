@@ -39,6 +39,12 @@ public class VictoryPanel : BasePanel
         RestartButton.gameObject.GetComponent<Button>().onClick.AddListener(OnClickRestart);
     }
 
+    // Game over cannot be dismissed with Esc.
+    public override bool CanGoBack
+    {
+        get { return false; }
+    }
+
     public void OnClickRestart()
     {
         Time.timeScale = 1f;

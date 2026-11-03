@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // Draw order of panels. A panel on a higher layer always renders above every
@@ -28,6 +29,8 @@ public class UIManager : MonoBehaviour
     private Transform _UIRoot;
     private readonly Dictionary<string, UIPanelInfo> panelInfoDict = new Dictionary<string, UIPanelInfo>();
     private readonly Dictionary<string, BasePanel> openedPanelDict = new Dictionary<string, BasePanel>();
+    // Open panels in the order they were opened. Used to find the top panel for GoBack.
+    private readonly List<BasePanel> panelStack = new List<BasePanel>();
     private readonly Dictionary<string, GameObject> prefabDict = new Dictionary<string, GameObject>();
     private readonly Dictionary<UILayer, Transform> layerRootDict = new Dictionary<UILayer, Transform>();
     private const string prefabPath = "Prefabs/Panels/";
@@ -164,6 +167,61 @@ public class UIManager : MonoBehaviour
         return openedPanelDict.ContainsKey(name);
     }
 
+    // ---------- Panel stack / back key ----------
+
+    // True while any panel is open.
+    public bool HasOpenPanel
+    {
+        get { return openedPanelDict.Count > 0; }
+    }
+
+    // The panel the player is looking at: the highest layer wins, and inside a
+    // layer the most recently opened panel wins.
+    public BasePanel TopPanel
+    {
+        get
+        {
+            BasePanel top = null;
+            for (int i = panelStack.Count - 1; i >= 0; i--)
+            {
+                BasePanel panel = panelStack[i];
+                if (panel == null)
+                {
+                    // destroyed without going through ClosePanel
+                    panelStack.RemoveAt(i);
+                    continue;
+                }
+                if (top == null || panel.Layer > top.Layer)
+                {
+                    top = panel;
+                }
+            }
+            return top;
+        }
+    }
+
+    // Sends "back" to the top panel. Returns true if a panel handled it.
+    // A panel with CanGoBack == false swallows the request (nothing below it
+    // is closed either) and this returns false.
+    public bool GoBack()
+    {
+        BasePanel top = TopPanel;
+        if (top == null || !top.CanGoBack)
+        {
+            return false;
+        }
+        top.GoBack();
+        return true;
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            GoBack();
+        }
+    }
+
     // ---------- Open / Close ----------
 
     // args is handed to the panel's OnOpen(args).
@@ -201,6 +259,7 @@ public class UIManager : MonoBehaviour
         }
 
         openedPanelDict.Add(name, panel);
+        panelStack.Add(panel);
         panel.OpenPanel(name, info.layer, args);
 
         PanelOpened?.Invoke(name);
@@ -212,6 +271,7 @@ public class UIManager : MonoBehaviour
         return OpenPanel(name, args) as T;
     }
 
+    /*
     public bool ClosePanel(string name) {
         BasePanel panel = null;
         if (!openedPanelDict.TryGetValue(name, out panel))
@@ -222,6 +282,7 @@ public class UIManager : MonoBehaviour
         panel.ClosePanel();
         return true;
     }
+    */
 
     public void CloseAllPanels()
     {
@@ -241,6 +302,13 @@ public class UIManager : MonoBehaviour
     // new panel that was opened with the same name in the meantime.
     internal void HandlePanelClosed(string name, BasePanel panel)
     {
+        panelStack.Remove(panel);
+
+        if (name == null)
+        {
+            return;
+        }
+
         BasePanel current = null;
         if (openedPanelDict.TryGetValue(name, out current) && current == panel)
         {

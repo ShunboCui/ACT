@@ -45,6 +45,26 @@ public class BasePanel : MonoBehaviour
     {
     }
 
+    // Whether the back key (Esc / UIManager.GoBack) may act on this panel.
+    // Return false for panels that must not be dismissed, e.g. game over.
+    public virtual bool CanGoBack
+    {
+        get { return true; }
+    }
+
+    // What "back" means for this panel. Default: close it. Override when the
+    // panel has its own close flow (resume the game, return to the main menu...).
+    protected virtual void OnBack()
+    {
+        ClosePanel();
+    }
+
+    // Called by UIManager.GoBack.
+    internal void GoBack()
+    {
+        OnBack();
+    }
+
     protected virtual void SetActive(bool active)
     {
         gameObject.SetActive(active);
