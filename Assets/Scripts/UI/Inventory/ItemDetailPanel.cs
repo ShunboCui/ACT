@@ -102,6 +102,12 @@ public class ItemDetailPanel : BasePanel
         UIDetailCard.GetComponent<ItemDetailCard>().Refresh(chosenItem, this);
     }
 
+    // Esc / back: same as the close button (refreshes the inventory panel).
+    protected override void OnBack()
+    {
+        OnClickClose();
+    }
+
     private void OnClickClose()
     {
         ClosePanel();

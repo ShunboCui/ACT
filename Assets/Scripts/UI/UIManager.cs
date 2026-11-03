@@ -1,16 +1,43 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
+
+// Draw order of panels. A panel on a higher layer always renders above every
+// panel on a lower layer, no matter which one was opened first.
+public enum UILayer
+{
+    Background = 0, // full screen backdrops
+    Normal = 1,     // regular menus: main menu, inventory, wish, dialogue
+    Popup = 2,      // dialogs opened on top of a menu: item detail
+    Top = 3         // always on top: death / victory screens
+}
+
+// Registration data of one panel. Add a new panel by registering it in
+// UIManager.RegisterPanels, no other UIManager code needs to change.
+public class UIPanelInfo
+{
+    public string name;
+    public string path;     // relative to Resources/Prefabs/Panels/
+    public UILayer layer;
+}
 
 public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
     private Transform _UIRoot;
-    private Dictionary<string, string> pathDict;
-    public Dictionary<string, BasePanel> openedPanelDict;
-    private Dictionary<string, GameObject> prefabDict;
+    private readonly Dictionary<string, UIPanelInfo> panelInfoDict = new Dictionary<string, UIPanelInfo>();
+    private readonly Dictionary<string, BasePanel> openedPanelDict = new Dictionary<string, BasePanel>();
+    // Open panels in the order they were opened. Used to find the top panel for GoBack.
+    private readonly List<BasePanel> panelStack = new List<BasePanel>();
+    private readonly Dictionary<string, GameObject> prefabDict = new Dictionary<string, GameObject>();
+    private readonly Dictionary<UILayer, Transform> layerRootDict = new Dictionary<UILayer, Transform>();
     private const string prefabPath = "Prefabs/Panels/";
+
+    // Raised after a panel is opened / closed, with the panel name.
+    public event Action<string> PanelOpened;
+    public event Action<string> PanelClosed;
 
     [SerializeField] Transform InteractionButton;
 
@@ -30,7 +57,7 @@ public class UIManager : MonoBehaviour
         }
 
         _instance = this;
-        InitDicts();
+        RegisterPanels();
     }
 
     public Transform UIRoot
@@ -52,21 +79,73 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void InitDicts()
+    private void RegisterPanels()
     {
-        prefabDict = new Dictionary<string, GameObject>();
-        openedPanelDict = new Dictionary<string, BasePanel>();
-        pathDict = new Dictionary<string, string>()
+        Register(UIConst.MainPanel, "MainPanel", UILayer.Normal);
+        Register(UIConst.InventoryPanel, "Inventory/InventoryPanel", UILayer.Normal);
+        Register(UIConst.WishPanel, "Wish/WishPanel", UILayer.Normal);
+        Register(UIConst.DialoguePanel, "DialoguePanel", UILayer.Normal);
+        Register(UIConst.ItemDetailPanel, "Inventory/ItemDetailPanel", UILayer.Popup);
+        Register(UIConst.VictoryPanel, "VictoryMenu", UILayer.Top);
+        Register(UIConst.DeadMenu, "DeadMenu", UILayer.Top);
+    }
+
+    public void Register(string name, string path, UILayer layer = UILayer.Normal)
+    {
+        panelInfoDict[name] = new UIPanelInfo()
         {
-            {UIConst.InventoryPanel, "Inventory/InventoryPanel" },
-            {UIConst.WishPanel, "Wish/WishPanel" },
-            {UIConst.MainPanel, "MainPanel" },
-            {UIConst.VictoryPanel, "VictoryMenu" },
-            {UIConst.DeadMenu, "DeadMenu" },
-            {UIConst.ItemDetailPanel, "Inventory/ItemDetailPanel" },
-            {UIConst.DialoguePanel, "DialoguePanel" }
+            name = name,
+            path = path,
+            layer = layer
         };
     }
+
+    // ---------- Layers ----------
+
+    private Transform GetLayerRoot(UILayer layer)
+    {
+        Transform root;
+        if (!layerRootDict.TryGetValue(layer, out root) || root == null)
+        {
+            EnsureLayerRoots();
+            root = layerRootDict[layer];
+        }
+        return root;
+    }
+
+    // Creates every missing layer root and puts all of them at the end of the
+    // canvas children in enum order, so sibling order == layer order.
+    private void EnsureLayerRoots()
+    {
+        foreach (UILayer layer in Enum.GetValues(typeof(UILayer)))
+        {
+            Transform root;
+            if (!layerRootDict.TryGetValue(layer, out root) || root == null)
+            {
+                layerRootDict[layer] = CreateLayerRoot(layer);
+            }
+        }
+
+        foreach (UILayer layer in Enum.GetValues(typeof(UILayer)))
+        {
+            layerRootDict[layer].SetAsLastSibling();
+        }
+    }
+
+    private Transform CreateLayerRoot(UILayer layer)
+    {
+        GameObject layerObject = new GameObject("Layer_" + layer, typeof(RectTransform));
+        RectTransform rect = layerObject.GetComponent<RectTransform>();
+        rect.SetParent(UIRoot, false);
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        rect.localScale = Vector3.one;
+        return rect;
+    }
+
+    // ---------- Query ----------
 
     public BasePanel GetPanel(string name)
     {
@@ -78,55 +157,181 @@ public class UIManager : MonoBehaviour
         return null;
     }
 
-    public BasePanel OpenPanel(string name)
+    public T GetPanel<T>(string name) where T : BasePanel
+    {
+        return GetPanel(name) as T;
+    }
+
+    public bool IsOpened(string name)
+    {
+        return openedPanelDict.ContainsKey(name);
+    }
+
+    // ---------- Panel stack / back key ----------
+
+    // True while any panel is open.
+    public bool HasOpenPanel
+    {
+        get { return openedPanelDict.Count > 0; }
+    }
+
+    // The panel the player is looking at: the highest layer wins, and inside a
+    // layer the most recently opened panel wins.
+    public BasePanel TopPanel
+    {
+        get
+        {
+            BasePanel top = null;
+            for (int i = panelStack.Count - 1; i >= 0; i--)
+            {
+                BasePanel panel = panelStack[i];
+                if (panel == null)
+                {
+                    // destroyed without going through ClosePanel
+                    panelStack.RemoveAt(i);
+                    continue;
+                }
+                if (top == null || panel.Layer > top.Layer)
+                {
+                    top = panel;
+                }
+            }
+            return top;
+        }
+    }
+
+    // Sends "back" to the top panel. Returns true if a panel handled it.
+    // A panel with CanGoBack == false swallows the request (nothing below it
+    // is closed either) and this returns false.
+    public bool GoBack()
+    {
+        BasePanel top = TopPanel;
+        if (top == null || !top.CanGoBack)
+        {
+            return false;
+        }
+        top.GoBack();
+        return true;
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            GoBack();
+        }
+    }
+
+    // ---------- Open / Close ----------
+
+    // args is handed to the panel's OnOpen(args).
+    // If the panel is already open, the open panel is returned unchanged.
+    public BasePanel OpenPanel(string name, object args = null)
     {
         BasePanel panel = null;
         if (openedPanelDict.TryGetValue(name, out panel))
         {
             Debug.Log("Panel already opened: " +  name);
-            return null;
+            return panel;
         }
 
-        string path = "";
-        if (!pathDict.TryGetValue(name, out path))
+        UIPanelInfo info = null;
+        if (!panelInfoDict.TryGetValue(name, out info))
         {
             Debug.LogError("Panel name incorrect: " + name);
             return null;
         }
 
-        GameObject panelPrefab = null;
-        if (!prefabDict.TryGetValue(name, out panelPrefab))
+        GameObject panelPrefab = LoadPrefab(info);
+        if (panelPrefab == null)
         {
-            string realPath = prefabPath + path;
-            panelPrefab = Resources.Load<GameObject>(realPath);
-            prefabDict.Add(name, panelPrefab);
+            Debug.LogError("Panel prefab not found: " + prefabPath + info.path);
+            return null;
         }
 
-        GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
-        Debug.Log("Instantiate completed");
+        GameObject panelObject = GameObject.Instantiate(panelPrefab, GetLayerRoot(info.layer), false);
         panel = panelObject.GetComponent<BasePanel>();
-        panel.OpenPanel(name);
-        openedPanelDict.Add(name, panel);
-        //
+        if (panel == null)
+        {
+            Debug.LogError("Panel prefab has no BasePanel component: " + name);
+            Destroy(panelObject);
+            return null;
+        }
 
-        //Time.timeScale = 0f;
-        Debug.Log("panelObject = " + panelObject);
-        
+        openedPanelDict.Add(name, panel);
+        panelStack.Add(panel);
+        panel.OpenPanel(name, info.layer, args);
+
+        PanelOpened?.Invoke(name);
         return panel;
     }
 
+    public T OpenPanel<T>(string name, object args = null) where T : BasePanel
+    {
+        return OpenPanel(name, args) as T;
+    }
+
+    /*
     public bool ClosePanel(string name) {
         BasePanel panel = null;
-        Debug.Log(openedPanelDict.ToString() + "Length: " + openedPanelDict.Count);
         if (!openedPanelDict.TryGetValue(name, out panel))
         {
             Debug.LogError("Panel not opened: " + name);
             return false;
         }
-        //Time.timeScale = 1f;
         panel.ClosePanel();
         return true;
     }
+    */
+
+    public void CloseAllPanels()
+    {
+        // ClosePanel modifies openedPanelDict, so iterate over a copy.
+        List<BasePanel> panels = new List<BasePanel>(openedPanelDict.Values);
+        foreach (BasePanel panel in panels)
+        {
+            if (panel != null)
+            {
+                panel.ClosePanel();
+            }
+        }
+    }
+
+    // Called by BasePanel.ClosePanel. Only removes the entry if it still
+    // belongs to this panel, so a late call for an old panel cannot remove a
+    // new panel that was opened with the same name in the meantime.
+    internal void HandlePanelClosed(string name, BasePanel panel)
+    {
+        panelStack.Remove(panel);
+
+        if (name == null)
+        {
+            return;
+        }
+
+        BasePanel current = null;
+        if (openedPanelDict.TryGetValue(name, out current) && current == panel)
+        {
+            openedPanelDict.Remove(name);
+        }
+        PanelClosed?.Invoke(name);
+    }
+
+    private GameObject LoadPrefab(UIPanelInfo info)
+    {
+        GameObject panelPrefab = null;
+        if (!prefabDict.TryGetValue(info.name, out panelPrefab) || panelPrefab == null)
+        {
+            panelPrefab = Resources.Load<GameObject>(prefabPath + info.path);
+            if (panelPrefab != null)
+            {
+                prefabDict[info.name] = panelPrefab;
+            }
+        }
+        return panelPrefab;
+    }
+
+    // ---------- Interaction button (NPC prompt) ----------
 
     public void EnableInteractionButton()
     {

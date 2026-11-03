@@ -59,6 +59,12 @@ public class MainPanel : BasePanel
         this.ClosePanel();
     }
 
+    // Esc / back: same as the close button (resumes the game).
+    protected override void OnBack()
+    {
+        OnClickClose();
+    }
+
     private void OnClickClose()
     {
         this.ClosePanel();

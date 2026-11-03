@@ -167,7 +167,7 @@ public class DialogueManager : MonoBehaviour
     {
         // Integration point: close the panel through your
         // existing panel manager.
-        UIManager.Instance.ClosePanel("DialoguePanel");
+        currentDialoguePanel.ClosePanel();
         playerControl.attackEnabled = true;
         GameManager.Instance.LockMouse();
         GameManager.Instance.StartCamera();

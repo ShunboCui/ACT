@@ -211,6 +211,19 @@ public class InventoryPanel : BasePanel
         print("<<<<<< onClickFood <<<<<<");
     }
 
+    // Esc / back: leave delete mode first, otherwise same as the close button.
+    protected override void OnBack()
+    {
+        if (curMode == PackageMode.delete)
+        {
+            onClickDeleteBack();
+        }
+        else
+        {
+            onClickClose();
+        }
+    }
+
     private void onClickClose()
     {
         print("<<<<<< onClickClose <<<<<<");
