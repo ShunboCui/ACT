@@ -1,17 +1,6 @@
-using Unity.VisualScripting;
-using UnityEngine;
-
-public class EnemyGetHitEffect : MonoBehaviour
+// Hit effect used by the player and enemy prefabs. All behaviour (lifetime,
+// returning to the pool) lives in PooledEffect. The class is kept so the
+// existing prefabs keep their script reference.
+public class EnemyGetHitEffect : PooledEffect
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        Destroy(this.gameObject, 1.0f);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

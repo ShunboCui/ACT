@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -143,7 +142,7 @@ public class PlayerControl : MonoBehaviour
             playerHealth.TakeDamage(10);
             Debug.Log("Player health " + playerHealth.CurrentHP);
             this.playerStateMachine.SwitchState(this.playerStateMachine.playerTakeDamageState);
-            Instantiate(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
+            EffectPool.Instance.Play(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
 
             //underAttack = true;
             //this.EndAttackingAction();

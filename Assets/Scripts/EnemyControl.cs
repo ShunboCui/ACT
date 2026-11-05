@@ -182,7 +182,7 @@ public class EnemyControl : MonoBehaviour
         currentHP -= playerDamage;
         StartUnderAttackAnim();
         this.enemyAnimator.CrossFade("get_hit", 0.1f);
-        Instantiate(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
+        EffectPool.Instance.Play(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
     }
 
     private void StartUnderAttackAnim()
