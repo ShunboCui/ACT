@@ -17,7 +17,7 @@ public class ItemDetailPanel : BasePanel
     private Transform UIMaterialList;
     private InventoryController controller;
 
-    private InventoryPanel packagePanel;
+    private InventoryPanel inventoryPanel;
     private PackageTableItem packageTableItem;
     private InventorySlotItem chosenItem;
     public GameObject MaterialItemPrefab;
@@ -51,7 +51,7 @@ public class ItemDetailPanel : BasePanel
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        packagePanel = UIManager.Instance.GetPanel("InventoryPanel") as InventoryPanel;
+        inventoryPanel = UIManager.Instance.GetPanel<InventoryPanel>("InventoryPanel");
         RefreshUI();
     }
 
@@ -69,7 +69,7 @@ public class ItemDetailPanel : BasePanel
 
     private void RefreshUI()
     {
-        ChooseUID = packagePanel.ChooseUID;
+        ChooseUID = inventoryPanel.ChooseUID;
         RefreshEnhanceLevel();
     }
 
@@ -111,8 +111,8 @@ public class ItemDetailPanel : BasePanel
     private void OnClickClose()
     {
         ClosePanel();
-        packagePanel.RefreshUI();
-        packagePanel.ChooseUID = ChooseUID;
+        inventoryPanel.RefreshUI();
+        inventoryPanel.ChooseUID = ChooseUID;
     }
 
     private void EquipWeapon()
