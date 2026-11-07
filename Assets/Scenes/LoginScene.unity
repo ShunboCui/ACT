@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: c56e28e54cac24b04ae3dd957d214534, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1331,6 +1331,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1 &1099740484
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1099740485}
+  - component: {fileID: 1099740486}
+  m_Layer: 0
+  m_Name: LoginBackgroundCharacters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1099740485
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099740484}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1099740486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099740484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba921ebcb65bf949b4fbd2d91e4d8df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoginSpiralBackground
+  characterPrefab: {fileID: 919132149155446097, guid: 3bf508d177c81794fa0d2a486bed6777, type: 3}
+  animatorController: {fileID: 0}
+  count: 36
+  modelScale: 1
+  areaWidth: 10
+  areaDepth: 10
+  bottomY: -8
+  topY: 12
+  minDistance: 3
+  riseSpeedRange: {x: 0.6, y: 1.5}
+  spinSpeedRange: {x: 60, y: 120}
+  randomizeStartHeight: 1
+  fadeZone: 0.12
+  bobAmount: 0.3
 --- !u!1 &1159005736
 GameObject:
   m_ObjectHideFlags: 0
@@ -2352,3 +2410,4 @@ SceneRoots:
   - {fileID: 73447279}
   - {fileID: 1587289129}
   - {fileID: 1629890650}
+  - {fileID: 1099740485}
