@@ -132,8 +132,9 @@ public class GameServerClient : MonoBehaviour
                         yield break;
                     }
 
-                    // Jump to game scene
-                    SceneManager.LoadScene(gameSceneName);
+                    // Show loading screen, then jump to game scene
+                    LoadingScreen.Load(gameSceneName);
+                    yield break;
                 }
                 else
                 {
