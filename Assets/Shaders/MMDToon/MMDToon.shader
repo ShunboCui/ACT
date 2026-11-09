@@ -1,5 +1,7 @@
-// MMD 卡通着色（不透明，双面，可选描边）。同时支持内置管线与 URP，
-// 属性名与 MMD4Mecanim 材质一致，可直接替换 MMD4Mecanim/MMDLit-BothFaces(-Edge)。
+// MMD 卡通着色（不透明，双面，可选描边）。同时支持内置管线与 URP。
+// 按 MMD4Mecanim/MMDLit-BothFaces(-Edge) 的光照公式重新实现，属性名与其材质一致，
+// 不依赖运行时脚本设置的全局变量，因此在 build 中不会整体消失。
+// 用 _SelfShadow / _EdgeEnabled / _NoShadowCasting 属性代替原来的 keyword 与 shader 变体。
 Shader "ACT/MMDToon"
 {
     Properties
@@ -8,42 +10,73 @@ Shader "ACT/MMDToon"
         _ToonTex("ToonTex", 2D) = "white" {}
         _Color("Diffuse", Color) = (1,1,1,1)
         _Ambient("Ambient", Color) = (0.5,0.5,0.5,1)
-        _Emissive("Emissive", Color) = (0,0,0,0)
+        _ShadowLum("ShadowLum", Range(0,10)) = 1.5
+        _ToonTone("ToonTone", Vector) = (1.0, 0.5, 0.5, 0.0)
+        _AddLightToonCen("AddLightToonCen", Float) = -0.1
+        _AddLightToonMin("AddLightToonMin", Float) = 0.5
         _EdgeColor("EdgeColor", Color) = (0,0,0,1)
         _EdgeSize("EdgeSize", Float) = 0.0005
-        _EdgeWidthMul("EdgeWidthMul", Float) = 20
         [Toggle] _EdgeEnabled("EdgeEnabled", Float) = 0
+        [Toggle] _SelfShadow("SelfShadow", Float) = 1
+        [Toggle] _NoShadowCasting("NoShadowCasting", Float) = 0
     }
 
     // ---------------- URP ----------------
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry+1" "RenderPipeline" = "UniversalPipeline" }
+        Cull Off
 
         Pass
         {
-            Name "ForwardLit"
+            Name "FORWARD"
             Tags { "LightMode" = "UniversalForward" }
-            Cull Off
+            Blend Off
             ZWrite On
 
             HLSLPROGRAM
+            #pragma target 3.0
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+            #pragma multi_compile_fragment _ _SHADOWS_SOFT
             #pragma vertex vertLit
             #pragma fragment fragLit
+            #define ACT_PASS_LIT
             #include "MMDToon-URP.hlsl"
             ENDHLSL
         }
 
         Pass
         {
-            Name "Edge"
+            Name "ShadowCaster"
+            Tags { "LightMode" = "ShadowCaster" }
+            ZWrite On
+            ZTest LEqual
+
+            HLSLPROGRAM
+            #pragma target 3.0
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            #pragma vertex vertShadow
+            #pragma fragment fragShadow
+            #define ACT_PASS_SHADOW
+            #include "MMDToon-URP.hlsl"
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "FORWARD_EDGE"
             Tags { "LightMode" = "SRPDefaultUnlit" }
             Cull Front
             ZWrite On
+            ZTest Less
+            Blend SrcAlpha OneMinusSrcAlpha
+            Offset 0.1, 1
 
             HLSLPROGRAM
+            #pragma target 3.0
             #pragma vertex vertEdge
             #pragma fragment fragEdge
+            #define ACT_PASS_EDGE
             #include "MMDToon-URP.hlsl"
             ENDHLSL
         }
@@ -52,37 +85,79 @@ Shader "ACT/MMDToon"
     // ---------------- Built-in ----------------
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
+        Tags { "RenderType" = "Opaque" "Queue" = "Geometry+1" }
+        Cull Off
 
         Pass
         {
-            Name "ForwardBase"
+            Name "FORWARD"
             Tags { "LightMode" = "ForwardBase" }
-            Cull Off
+            Blend Off
             ZWrite On
 
             CGPROGRAM
             #pragma target 3.0
-            #pragma vertex vertLit
-            #pragma fragment fragLit
+            #pragma multi_compile_fwdbase nolightmap nodirlightmap
+            #pragma vertex vertBase
+            #pragma fragment fragBase
+            #define ACT_PASS_BASE
             #include "MMDToon-BuiltIn.cginc"
             ENDCG
         }
 
         Pass
         {
-            Name "Edge"
-            Cull Front
-            ZWrite On
+            Name "FORWARD_DELTA"
+            Tags { "LightMode" = "ForwardAdd" }
+            Blend One One
+            ZWrite Off
 
             CGPROGRAM
             #pragma target 3.0
+            #pragma multi_compile_fwdadd
+            #pragma vertex vertAdd
+            #pragma fragment fragAdd
+            #define ACT_PASS_ADD
+            #include "MMDToon-BuiltIn.cginc"
+            ENDCG
+        }
+
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags { "LightMode" = "ShadowCaster" }
+            ZWrite On
+            ZTest LEqual
+            Offset 1, 1
+
+            CGPROGRAM
+            #pragma target 3.0
+            #pragma multi_compile_shadowcaster
+            #pragma vertex vertShadow
+            #pragma fragment fragShadow
+            #define ACT_PASS_SHADOW
+            #include "MMDToon-BuiltIn.cginc"
+            ENDCG
+        }
+
+        Pass
+        {
+            Name "FORWARD_EDGE"
+            Tags { "LightMode" = "ForwardBase" }
+            Cull Front
+            ZWrite On
+            ZTest Less
+            Blend SrcAlpha OneMinusSrcAlpha
+            Offset 0.1, 1
+
+            CGPROGRAM
+            #pragma target 3.0
+            #pragma multi_compile_fwdbase nolightmap nodirlightmap novertexlight
             #pragma vertex vertEdge
             #pragma fragment fragEdge
+            #define ACT_PASS_EDGE
             #include "MMDToon-BuiltIn.cginc"
             ENDCG
         }
     }
-
-    Fallback "Legacy Shaders/VertexLit"
 }

@@ -1,7 +1,8 @@
-// URP 版 MMD 卡通着色（供 ACT/MMDToon 与 ACT/MMDToonTransparent 共用）
-#ifndef ACT_MMDTOON_URP_INCLUDED
-#define ACT_MMDTOON_URP_INCLUDED
-
+// URP 版 MMD 卡通着色，按 pass 由 ACT_PASS_* 宏选择要编译的部分：
+//   ACT_PASS_LIT    主光 + 阴影接收 + 环境光
+//   ACT_PASS_SHADOW ShadowCaster
+//   ACT_PASS_EDGE   描边
+// 半透明版额外定义 ACT_TRANSPARENT。URP 版暂不处理附加光。
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
@@ -12,12 +13,19 @@ CBUFFER_START(UnityPerMaterial)
     float4 _MainTex_ST;
     half4 _Color;
     half4 _Ambient;
-    half4 _Emissive;
     half4 _EdgeColor;
+    half4 _ToonTone;
+    half _ShadowLum;
+    half _AddLightToonCen;
+    half _AddLightToonMin;
+    half _SelfShadow;
+    half _NoShadowCasting;
     float _EdgeSize;
-    float _EdgeWidthMul;
     float _EdgeEnabled;
 CBUFFER_END
+
+#define ACT_SAMPLE_TOON(r) SAMPLE_TEXTURE2D(_ToonTex, sampler_ToonTex, float2((r), (r))).rgb
+#include "MMDToon-Math.hlsl"
 
 struct Attributes
 {
@@ -26,56 +34,128 @@ struct Attributes
     float2 uv : TEXCOORD0;
 };
 
-struct Varyings
+// ======================= Lit =======================
+#if defined(ACT_PASS_LIT)
+
+struct VaryingsLit
 {
     float4 positionCS : SV_POSITION;
     float2 uv : TEXCOORD0;
     float3 normalWS : TEXCOORD1;
+    float3 positionWS : TEXCOORD2;
 };
 
-Varyings vertLit(Attributes v)
+VaryingsLit vertLit(Attributes v)
 {
-    Varyings o;
-    o.positionCS = TransformObjectToHClip(v.positionOS.xyz);
+    VaryingsLit o;
+    o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
+    o.positionCS = TransformWorldToHClip(o.positionWS);
     o.uv = TRANSFORM_TEX(v.uv, _MainTex);
     o.normalWS = TransformObjectToWorldNormal(v.normalOS);
     return o;
 }
 
-half4 fragLit(Varyings i, FRONT_FACE_TYPE facing : FRONT_FACE_SEMANTIC) : SV_Target
+half4 fragLit(VaryingsLit i) : SV_Target
 {
-    half4 baseCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv) * _Color;
+    half4 albedo = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+#if defined(ACT_TRANSPARENT)
+    albedo.a *= _Color.a;
+#endif
+    clip(albedo.a - ACT_CLIP_EPS);
 
-    float3 n = normalize(i.normalWS);
-    if (!IS_FRONT_VFACE(facing, true, false)) n = -n;
+    float3 N = normalize(i.normalWS);
+    float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS);
+    Light mainLight = GetMainLight(shadowCoord);
+    half shadowAtten = mainLight.shadowAttenuation;
 
-    Light mainLight = GetMainLight();
-    float ndl = dot(n, mainLight.direction);
-    half3 toon = SAMPLE_TEXTURE2D(_ToonTex, sampler_ToonTex, float2(0.5, saturate(ndl * 0.5 + 0.5))).rgb;
+    half3 gamb = SampleSH(N);
+    half3 vlight = gamb * ActAmbientRate();
 
-    half3 ambient = SampleSH(n) * (_Ambient.rgb * 2.0);
-    half3 lighting = mainLight.color * toon + ambient;
+    half NdotL = dot(N, mainLight.direction);
+    half3 ramp = ActRamp(NdotL, shadowAtten);
+    half3 lightColor = mainLight.color * shadowAtten;
 
-    half4 col;
-    col.rgb = baseCol.rgb * lighting + _Emissive.rgb;
-    col.a = baseCol.a;
-    return col;
+    half3 c = albedo.rgb * ActTempDiffuse(gamb) * lightColor * ramp;
+    c += albedo.rgb * vlight;
+    return half4(c, albedo.a);
 }
 
-Varyings vertEdge(Attributes v)
+#endif // ACT_PASS_LIT
+
+// ======================= ShadowCaster =======================
+#if defined(ACT_PASS_SHADOW)
+
+float3 _LightDirection;
+float3 _LightPosition;
+
+struct VaryingsShadow
 {
-    Varyings o;
-    float width = (_EdgeEnabled > 0.5) ? _EdgeSize * _EdgeWidthMul : 0.0;
-    o.positionCS = TransformObjectToHClip(v.positionOS.xyz + normalize(v.normalOS) * width);
-    if (_EdgeEnabled <= 0.5) o.positionCS = float4(2, 2, 2, 1);
-    o.uv = v.uv;
-    o.normalWS = 0;
+    float4 positionCS : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+VaryingsShadow vertShadow(Attributes v)
+{
+    VaryingsShadow o;
+    float3 positionWS = TransformObjectToWorld(v.positionOS.xyz);
+    float3 normalWS = TransformObjectToWorldNormal(v.normalOS);
+#if defined(_CASTING_PUNCTUAL_LIGHT_SHADOW)
+    float3 lightDirectionWS = normalize(_LightPosition - positionWS);
+#else
+    float3 lightDirectionWS = _LightDirection;
+#endif
+    float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+#if UNITY_REVERSED_Z
+    positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+#else
+    positionCS.z = max(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+#endif
+    o.positionCS = positionCS;
+    o.uv = TRANSFORM_TEX(v.uv, _MainTex);
     return o;
 }
 
-half4 fragEdge(Varyings i) : SV_Target
+half4 fragShadow(VaryingsShadow i) : SV_Target
 {
-    return half4(_EdgeColor.rgb, 1);
+    clip(-_NoShadowCasting);
+#if defined(ACT_TRANSPARENT)
+    half a = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv).a * _Color.a;
+    clip(a - ACT_CLIP_EPS);
+#endif
+    return 0;
 }
 
-#endif
+#endif // ACT_PASS_SHADOW
+
+// ======================= Edge =======================
+#if defined(ACT_PASS_EDGE)
+
+struct VaryingsEdge
+{
+    float4 positionCS : SV_POSITION;
+    float3 positionWS : TEXCOORD0;
+    half3 vlight : TEXCOORD1;
+};
+
+VaryingsEdge vertEdge(Attributes v)
+{
+    VaryingsEdge o;
+    float3 positionOS = v.positionOS.xyz + v.normalOS * _EdgeSize;
+    o.positionWS = TransformObjectToWorld(positionOS);
+    o.positionCS = TransformWorldToHClip(o.positionWS);
+    if (_EdgeEnabled < 0.5) o.positionCS = float4(2, 2, 2, 1);
+    o.vlight = SampleSH(TransformObjectToWorldNormal(v.normalOS));
+    return o;
+}
+
+half4 fragEdge(VaryingsEdge i) : SV_Target
+{
+    clip(_EdgeColor.a - ACT_CLIP_EPS);
+    Light mainLight = GetMainLight();
+    half3 color = mainLight.color * ACT_GLOBALLIGHTING;
+    color += i.vlight;
+    color *= _EdgeColor.rgb;
+    return half4(color, _EdgeColor.a);
+}
+
+#endif // ACT_PASS_EDGE

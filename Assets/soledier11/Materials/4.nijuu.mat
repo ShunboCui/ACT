@@ -18,7 +18,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2006
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -92,8 +92,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _SelfShadow: 1
     - _EdgeEnabled: 0
-    - _EdgeWidthMul: 20
     - _ALPower: 0
     - _AddLightToonCen: -0.1
     - _AddLightToonMin: 0.5
