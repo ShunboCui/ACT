@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 19.katanaha
-  m_Shader: {fileID: 4800000, guid: 9997fec0b6b9640458119b1670fa0d48, type: 3}
+  m_Shader: {fileID: 4800000, guid: a1c0de00000000000000000000000001, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -19,7 +19,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2021
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -93,6 +93,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _EdgeEnabled: 1
+    - _EdgeWidthMul: 20
     - _ALPower: 0
     - _AddLightToonCen: -0.1
     - _AddLightToonMin: 0.5
