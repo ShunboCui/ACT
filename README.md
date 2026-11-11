@@ -1,3 +1,4 @@
+2026/11/11 Add quest tracker panel on game HUD. NOTE: Unity does not guarantee that `Awake()` on one `GameObject` will always execute before `OnEnable()` on another `GameObject`. However, for all enabled objects in a scene, both Awake and OnEnable will complete before the first Start is executed.
 2026/10/24 Connect dialogue and quest modules. Note: NextLine button needs the image component to receive clicking ray. 
 2026/10/22 Add CameraTarget to Player, adjust Cinemachine
 2026/10/18 Add material selection functions
