@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 6.shirome
-  m_Shader: {fileID: 4800000, guid: ad8223b354fde4242bd807a2af397a6e, type: 3}
+  m_Shader: {fileID: 4800000, guid: a1c0de00000000000000000000000001, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -91,6 +91,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _SelfShadow: 0
+    - _EdgeEnabled: 0
     - _ALPower: 0
     - _AddLightToonCen: -0.1
     - _AddLightToonMin: 0.5
