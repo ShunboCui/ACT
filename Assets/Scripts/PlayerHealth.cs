@@ -7,12 +7,12 @@ public class PlayerHealth : MonoBehaviour
     public int CurrentHP;
 
     public event Action<int, int> OnHealthChanged;
-    [SerializeField] private PlayerHealthBar healthBar;
+    //[SerializeField] private PlayerHealthBar healthBar;
 
     void Start()
     {
         CurrentHP = MaxHP;
-        healthBar.Bind(this);
+        //healthBar.Bind(this);
         OnHealthChanged?.Invoke(CurrentHP, MaxHP);
     }
 
