@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
 
     public Transform playerCamera;
 
+    [SerializeField] private PlayerHealth playerHealth;
+
     public static GameManager Instance {
         get {
             return _instance;
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
         //UIManager.Instance.OpenPanel(UIConst.Background);
         LockMouse();
         this.enemyList = GameObject.FindGameObjectsWithTag("Enemy");
+        UIManager.Instance.OpenPanel(UIConst.HUDPanel, playerHealth);
     }
 
     void Update()

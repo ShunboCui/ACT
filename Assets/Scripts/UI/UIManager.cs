@@ -9,9 +9,10 @@ using UnityEngine.UI;
 public enum UILayer
 {
     Background = 0, // full screen backdrops
-    Normal = 1,     // regular menus: main menu, inventory, wish, dialogue
-    Popup = 2,      // dialogs opened on top of a menu: item detail
-    Top = 3         // always on top: death / victory screens
+    HUD = 1,
+    Normal = 2,     // regular menus: main menu, inventory, wish, dialogue
+    Popup = 3,      // dialogs opened on top of a menu: item detail
+    Top = 4         // always on top: death / victory screens
 }
 
 // Registration data of one panel. Add a new panel by registering it in
@@ -39,7 +40,7 @@ public class UIManager : MonoBehaviour
     public event Action<string> PanelOpened;
     public event Action<string> PanelClosed;
 
-    [SerializeField] Transform InteractionButton;
+    //[SerializeField] Transform InteractionButton;
 
     public static UIManager Instance
     {
@@ -58,6 +59,12 @@ public class UIManager : MonoBehaviour
 
         _instance = this;
         RegisterPanels();
+        EnsureLayerRoots();
+    }
+
+    private void Start()
+    {
+
     }
 
     public Transform UIRoot
@@ -88,6 +95,7 @@ public class UIManager : MonoBehaviour
         Register(UIConst.ItemDetailPanel, "Inventory/ItemDetailPanel", UILayer.Popup);
         Register(UIConst.VictoryPanel, "VictoryMenu", UILayer.Top);
         Register(UIConst.DeadMenu, "DeadMenu", UILayer.Top);
+        Register(UIConst.HUDPanel, "HUDPanel", UILayer.HUD);
     }
 
     public void Register(string name, string path, UILayer layer = UILayer.Normal)
@@ -169,10 +177,10 @@ public class UIManager : MonoBehaviour
 
     // ---------- Panel stack / back key ----------
 
-    // True while any panel is open.
+    // True while any panel other than the always-on ones (HUD) is open.
     public bool HasOpenPanel
     {
-        get { return openedPanelDict.Count > 0; }
+        get { return TopPanel != null; }
     }
 
     // The panel the player is looking at: the highest layer wins, and inside a
@@ -259,7 +267,10 @@ public class UIManager : MonoBehaviour
         }
 
         openedPanelDict.Add(name, panel);
-        panelStack.Add(panel);
+        if (panel.InStack)
+        {
+            panelStack.Add(panel);
+        }
         panel.OpenPanel(name, info.layer, args);
 
         PanelOpened?.Invoke(name);
@@ -330,25 +341,6 @@ public class UIManager : MonoBehaviour
         }
         return panelPrefab;
     }
-
-    // ---------- Interaction button (NPC prompt) ----------
-
-    public void EnableInteractionButton()
-    {
-        InteractionButton.gameObject.SetActive(true);
-    }
-
-    public void DisableInteractionButton()
-    {
-        InteractionButton.gameObject.SetActive(false);
-    }
-
-    public void BindInteractionButton(DialogueData dialogueData, Func<bool> acceptQuest)
-    {
-        Button button = InteractionButton.gameObject.GetComponent<Button>();
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => DialogueManager.Instance.StartDialogue(dialogueData, acceptQuest));
-    }
 }
 
 public class UIConst
@@ -360,5 +352,6 @@ public class UIConst
     public const string DeadMenu = "DeadMenu";
     public const string ItemDetailPanel = "ItemDetailPanel";
     public const string DialoguePanel = "DialoguePanel";
+    public const string HUDPanel = "HUDPanel";
 
 }

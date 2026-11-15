@@ -5,12 +5,12 @@ public class NPCInteractable : MonoBehaviour
 {
     [SerializeField] private DialogueData dialogueData;
     [SerializeField] private QuestDefinition questDefinition;
-    private bool playerInRange;
+    private bool playerInRange; 
+    private HUDPanel Hud => UIManager.Instance.GetPanel<HUDPanel>(UIConst.HUDPanel);
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -18,8 +18,8 @@ public class NPCInteractable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            UIManager.Instance.BindInteractionButton(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition));
-            UIManager.Instance.EnableInteractionButton();
+            Hud.BindInteractionButton(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition));
+            Hud.EnableInteractionButton();
         }
     }
 
@@ -28,7 +28,7 @@ public class NPCInteractable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            UIManager.Instance.DisableInteractionButton();
+            Hud.DisableInteractionButton();
         }
     }
 
@@ -46,7 +46,7 @@ public class NPCInteractable : MonoBehaviour
             Keyboard.current.fKey.wasPressedThisFrame)
         {
             DialogueManager.Instance.StartDialogue(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition), ()=> QuestManager.Instance.CompleteQuest(questDefinition));
-            UIManager.Instance.DisableInteractionButton();
+            Hud.DisableInteractionButton();
         }
     }
 }
