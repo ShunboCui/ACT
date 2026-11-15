@@ -266,11 +266,23 @@ public class GameManager : MonoBehaviour
     public void StopCamera()
     {
         playerCamera.GetComponent<CinemachineCamera>().enabled = false;
+        SetViewSwitcherLookEnabled(false);
+    }
+
+    // The first-person camera is driven by PlayerViewSwitcher, not by playerCamera.
+    private void SetViewSwitcherLookEnabled(bool enabled)
+    {
+        PlayerViewSwitcher viewSwitcher = FindAnyObjectByType<PlayerViewSwitcher>();
+        if (viewSwitcher != null)
+        {
+            viewSwitcher.LookEnabled = enabled;
+        }
     }
 
     public void StartCamera()
     {
         playerCamera.GetComponent<CinemachineCamera>().enabled = true;
+        SetViewSwitcherLookEnabled(true);
     }
 }
 

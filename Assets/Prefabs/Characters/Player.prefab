@@ -242,6 +242,7 @@ GameObject:
   - component: {fileID: 7373547190874023157}
   - component: {fileID: 5706975477678529467}
   - component: {fileID: 8382836047045236071}
+  - component: {fileID: 8840521937406152731}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -361,6 +362,26 @@ MonoBehaviour:
   MaxHP: 100
   CurrentHP: 0
   healthBar: {fileID: 0}
+--- !u!114 &8840521937406152731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7506551294732931209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d3c1f0a9b2e4c58a6f41e0d5b9c2a37, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerViewSwitcher
+  thirdPersonCamera: {fileID: 0}
+  blendTime: 0.3
+  eyeAnchor: {fileID: 0}
+  mouseSensitivity: 0.1
+  stickSensitivity: 150
+  tiltRange: {x: -70, y: 70}
+  hideBody: 1
+  keepWeaponVisible: 1
 --- !u!82 &8382836047045236071
 AudioSource:
   m_ObjectHideFlags: 0

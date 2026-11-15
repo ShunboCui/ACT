@@ -69,8 +69,15 @@ public class PlayerControl : MonoBehaviour
     public int initialWeaponId = 2;
     public bool attackEnabled;
 
+    private PlayerViewSwitcher viewSwitcher;
+    private bool IsFirstPerson
+    {
+        get { return viewSwitcher != null && viewSwitcher.IsFirstPerson; }
+    }
+
     private void Awake()
     {
+        viewSwitcher = GetComponent<PlayerViewSwitcher>();
         PlayerAnimator = this.gameObject.GetComponent<Animator>();
         ComboManager = new ComboManager(this, playerSkillSet);
         playerStateMachine = new PlayerStateMachine(this);
@@ -162,9 +169,14 @@ public class PlayerControl : MonoBehaviour
 
             //Calculate target angle
             TargetDirection = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + PlayerCamera.transform.eulerAngles.y;
-            RotateAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, TargetDirection, ref RotateSmooth, RotateTime);
+            // In first person the player faces where the camera looks (PlayerViewSwitcher)
+            // and only strafes, so do not turn toward the move direction.
+            if (!IsFirstPerson)
+            {
+                RotateAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, TargetDirection, ref RotateSmooth, RotateTime);
 
-            transform.rotation = Quaternion.Euler(0, RotateAngle, 0);
+                transform.rotation = Quaternion.Euler(0, RotateAngle, 0);
+            }
 
             NewMoveDirection = Quaternion.Euler(0, TargetDirection, 0) * Vector3.forward;
 
@@ -193,7 +205,11 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             AttackPressed = true;
-            PlayerViewAngle();
+            // In first person the attack goes where the player is looking.
+            if (!IsFirstPerson)
+            {
+                PlayerViewAngle();
+            }
             WeaponEffect.SetActive(true);
             /*
             if (ComboState < 3)
