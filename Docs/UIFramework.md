@@ -1,5 +1,7 @@
 # UI framework (Panel manager)
 
+中文版：[UIFramework.zh.md](UIFramework.zh.md)
+
 Code: `Assets/Scripts/UI/UIManager.cs`, `Assets/Scripts/UI/BasePanel.cs`
 
 ## Structure
