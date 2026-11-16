@@ -12,6 +12,7 @@ public class PackageTable : ScriptableObject
 [System.Serializable]
 public class PackageTableItem
 {
+    [Header("Basic Info")]
     public int id;
     public int type;
     public int star;
@@ -20,5 +21,11 @@ public class PackageTableItem
     public string skillsDescription;
     public string imagePath;
     public string modelPath;
+
+    [Header("Materials")]
     public int expGain;
+
+    [Header("Weapon Stats")]
+    public int baseDamage;
+    public int damagePerLevel;
 }

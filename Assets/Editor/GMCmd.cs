@@ -67,12 +67,12 @@ public class GMCmd
 
     }
 
-    [MenuItem("GMCmd/Switch to weapon 2")]
+    [MenuItem("GMCmd/Switch to first weapon")]
     public static void SwitchWeapon()
     {
         //WeaponController.Instance.EquipWeapon(GameObject.Find("Player").GetComponent<PlayerControl>().Lions_Roar_Data);
-        PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(5);
-        WeaponController.Instance.EquipWeapon(packageTableItem);
+        InventorySlotItem firstWeaponItem = GameManager.Instance.GetFirstWeapon();
+        WeaponController.Instance.EquipWeapon(firstWeaponItem);
     }
 
     [MenuItem("GMCmd/Stop camera")]

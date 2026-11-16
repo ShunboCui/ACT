@@ -128,6 +128,13 @@ public class GameManager : MonoBehaviour
         return packageItems;
     }
 
+    public InventorySlotItem GetFirstWeapon()
+    {
+        List<InventorySlotItem> dataList = GetInventorySlotItemsByType(GameConst.InventoryWeaponType);
+        if (dataList.Count == 0) return null;
+        return dataList[0];
+    }
+
     public List<InventorySlotItem> GetInventorySlotItemsByType(int itemType)
     {
         List<PackageTableItem> tableItems = GetPackageTableByType(itemType);
