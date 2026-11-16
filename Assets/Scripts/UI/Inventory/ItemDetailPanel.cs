@@ -18,7 +18,6 @@ public class ItemDetailPanel : BasePanel
     private InventoryController controller;
 
     private InventoryPanel inventoryPanel;
-    private PackageTableItem packageTableItem;
     private InventorySlotItem chosenItem;
     public GameObject MaterialItemPrefab;
     public int totalExpGain;
@@ -117,8 +116,7 @@ public class ItemDetailPanel : BasePanel
 
     private void EquipWeapon()
     {
-        packageTableItem = GameManager.Instance.GetPackageTableItemById(chosenItem.id);
-        WeaponController.Instance.EquipWeapon(packageTableItem);
+        WeaponController.Instance.EquipWeapon(chosenItem);
     }
 
     private void SwitchToDetails()

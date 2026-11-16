@@ -57,7 +57,6 @@ public class PlayerControl : MonoBehaviour
     public GameObject TakeDamageEffect;
     private Transform TakeDamageEffectPosition;
     private GameObject[] enemyList;
-    public float playerDamage;
     //private bool underAttack = false;
     //private Slider playerHealthBar;
     private Text playerCurrentHealth;
@@ -106,8 +105,7 @@ public class PlayerControl : MonoBehaviour
         //LockMouse();
 
         //WeaponController.Instance.EquipWeapon(Freedom_Sworn_Data);
-        PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(initialWeaponId);
-        WeaponController.Instance.EquipWeapon(packageTableItem);
+        WeaponController.Instance.EquipWeapon(GameManager.Instance.GetFirstWeapon());
     }
 
     private void OnDisable()
@@ -126,7 +124,7 @@ public class PlayerControl : MonoBehaviour
 
 
         DoAttack();
-            //Jump();
+        //Jump();
 
         this.playerStateMachine.Update();
         Dodge();
@@ -135,18 +133,13 @@ public class PlayerControl : MonoBehaviour
         //PlayerUIControl();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void TakeDamage(int damage)
     {
-        if (!isDead && !dodge && other.gameObject.tag == "EnemyAttackBox")
-        {
-            playerHealth.TakeDamage(10);
-            Debug.Log("Player health " + playerHealth.CurrentHP);
-            this.playerStateMachine.SwitchState(this.playerStateMachine.playerTakeDamageState);
-            Instantiate(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
-
-            //underAttack = true;
-            //this.EndAttackingAction();
-        }
+        if (isDead || dodge) return;
+        playerHealth.TakeDamage(damage);
+        Debug.Log("Player health " + playerHealth.CurrentHP);
+        this.playerStateMachine.SwitchState(this.playerStateMachine.playerTakeDamageState);
+        Instantiate(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
     }
 
     public void Move(Vector3 direction)

@@ -9,6 +9,7 @@ public class WeaponController : MonoBehaviour
     [Header("Weapon Pool")]
     public Transform weaponPoolRoot;
 
+    private InventorySlotItem currentEquippedItem;
     private PackageTableItem currentWeaponData;
 
     private GameObject currentWeapon;
@@ -35,8 +36,10 @@ public class WeaponController : MonoBehaviour
         weaponPoolRoot = GameObject.Find("WeaponPool").transform;
     }
 
-    public void EquipWeapon(PackageTableItem packageTableItem)
+    public void EquipWeapon(InventorySlotItem equippedItem)
     {
+        currentEquippedItem = equippedItem;
+        PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(currentEquippedItem.id);
         // 已经装备的是同一把武器
         if (currentWeaponData == packageTableItem)
         {
@@ -114,5 +117,16 @@ public class WeaponController : MonoBehaviour
         currentWeaponData = null;
 
         currentWeapon = null;
+    }
+
+    public int CalculateDamage(float multiplier = 1f)
+    {
+        if (currentWeaponData == null)
+            return 5;
+
+        int damage = currentWeaponData.baseDamage
+                   + (currentEquippedItem.level - 1) * currentWeaponData.damagePerLevel;
+
+        return Mathf.RoundToInt(damage * multiplier);
     }
 }
