@@ -116,3 +116,14 @@ MonoBehaviour:
     expGain: 10000
     baseDamage: 0
     damagePerLevel: 0
+  - id: 9
+    type: 1
+    star: 0
+    name: Ramen
+    description: 
+    skillsDescription: 
+    imagePath: Image/UI/Food/Ramen
+    modelPath: Prefabs/Food/Ramen
+    expGain: 0
+    baseDamage: 0
+    damagePerLevel: 0
