@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -19,9 +20,58 @@ public class InventorySlotView : MonoBehaviour, IPointerClickHandler, IPointerEn
     private PackageTableItem packageTableItem;
     private InventoryPanel uiParent;
 
+    // When true, item icons are created once per image path and reused.
+    // false keeps the old behaviour (a new Sprite on every Refresh, which is
+    // never destroyed). Set by InventoryPanel from its scroll mode.
+    public static bool CacheSprites;
+    private static readonly System.Collections.Generic.Dictionary<string, Sprite> spriteCache =
+        new System.Collections.Generic.Dictionary<string, Sprite>();
+
+    public RectTransform SlotRect { get; private set; }
+
     private void Awake()
     {
+        SlotRect = (RectTransform)transform;
         InitUI();
+    }
+
+    private static Sprite GetSprite(string imagePath)
+    {
+        Sprite sprite;
+        if (CacheSprites && spriteCache.TryGetValue(imagePath, out sprite) && sprite != null)
+        {
+            return sprite;
+        }
+
+        Texture2D t = (Texture2D)Resources.Load(imagePath);
+        sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
+        if (CacheSprites)
+        {
+            spriteCache[imagePath] = sprite;
+        }
+        return sprite;
+    }
+
+    // Called when a recycled slot is hidden, so the next item does not inherit
+    // hover / selection visuals.
+    public void OnRecycle()
+    {
+        UIDeleteSelect.gameObject.SetActive(false);
+        UISelectAnimation.gameObject.SetActive(false);
+        UIMouseOverAnimation.gameObject.SetActive(false);
+    }
+
+    // Selection highlight, used by the click handler and when a recycled slot
+    // is bound to the item that is currently highlighted.
+    public void ShowSelected()
+    {
+        UISelectAnimation.gameObject.SetActive(true);
+        UISelectAnimation.GetComponent<Animator>().SetTrigger("In");
+    }
+
+    public string Uid
+    {
+        get { return inventorySlotItem != null ? inventorySlotItem.uid : null; }
     }
 
     private void InitUI()
@@ -60,12 +110,13 @@ public class InventorySlotView : MonoBehaviour, IPointerClickHandler, IPointerEn
         UINew.gameObject.SetActive(this.inventorySlotItem.isNew);
 
         //Image of the item
-        Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
-        Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0,0));
-        UIIcon.GetComponent<Image>().sprite = temp;
+        UIIcon.GetComponent<Image>().sprite = GetSprite(this.packageTableItem.imagePath);
 
         //Refresh stars
         RefreshStars();
+
+        //A recycled slot may carry the delete mark of its previous item
+        RefreshDeleteState();
     }
 
     public void RefreshStars()
@@ -86,14 +137,8 @@ public class InventorySlotView : MonoBehaviour, IPointerClickHandler, IPointerEn
 
     public void RefreshDeleteState()
     {
-        if (uiParent.selectedDeleteUid.Contains(this.inventorySlotItem.uid))
-        {
-            UIDeleteSelect.gameObject.SetActive(true);
-        }
-        else
-        {
-            UIDeleteSelect.gameObject.SetActive(false);
-        }
+        List<string> selected = uiParent.selectedDeleteUid;
+        UIDeleteSelect.gameObject.SetActive(selected != null && selected.Contains(this.inventorySlotItem.uid));
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -104,6 +149,7 @@ public class InventorySlotView : MonoBehaviour, IPointerClickHandler, IPointerEn
             uiParent.AddSelectDeleteUid(this.inventorySlotItem.uid);
         }
         UISelectAnimation.GetComponent<Animator>().SetTrigger("In");
+        uiParent.HighlightUid = this.inventorySlotItem.uid;
         uiParent.ChooseUID = this.inventorySlotItem.uid;
         Debug.Log("Mouse click");
     }

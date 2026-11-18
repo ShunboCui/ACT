@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Unity.Profiling;
 
 public enum PackageMode
 {
@@ -12,6 +13,15 @@ public enum PackageMode
     delete,
 
     sort
+}
+
+// How the item grid is filled. Switch it on the InventoryPanel prefab to
+// compare the three in the Profiler (see Docs/InventoryScrollBenchmark.md).
+public enum InventoryScrollMode
+{
+    Original, // destroy every slot and instantiate new ones on each refresh
+    Pooled,   // keep the slots, rebind them, hide the extra ones
+    Virtual   // only slots inside the viewport exist (InventoryVirtualGrid)
 }
 
 public class InventoryPanel : BasePanel
@@ -85,11 +95,50 @@ public class InventoryPanel : BasePanel
 
     public List<string> selectedDeleteUid;
 
+    [SerializeField] private InventoryScrollMode scrollMode = InventoryScrollMode.Original;
+    [SerializeField] private bool logBenchmark;
+
+    private static readonly ProfilerMarker refreshScrollMarker = new ProfilerMarker("Inventory.RefreshScroll");
+
+    private ScrollRect scrollRect;
+    private InventoryVirtualGrid virtualGrid;
+    private readonly List<InventorySlotView> slotPool = new List<InventorySlotView>();
+    private List<InventorySlotItem> currentItems = new List<InventorySlotItem>();
+
+    // The slot the player clicked last. Recycled slots re-show the highlight
+    // when they are bound to this item again.
+    public string HighlightUid { get; set; }
+
     override protected void Awake()
     {
         base.Awake();
         controller = new InventoryController();
         InitUI();
+        SetupScrollMode();
+    }
+
+    private void SetupScrollMode()
+    {
+        scrollRect = UIScrollView.GetComponent<ScrollRect>();
+        InventorySlotView.CacheSprites = scrollMode != InventoryScrollMode.Original;
+
+        if (scrollMode == InventoryScrollMode.Virtual)
+        {
+            // Read the layout numbers before the grid layout gets disabled.
+            GridLayoutGroup grid = scrollRect.content.GetComponent<GridLayoutGroup>();
+            virtualGrid = UIScrollView.gameObject.AddComponent<InventoryVirtualGrid>();
+            virtualGrid.Setup(InventorySlotUIPrefab.GetComponent<InventorySlotView>(), BindSlot,
+                grid.cellSize, grid.spacing, grid.padding);
+        }
+    }
+
+    private void BindSlot(int index, InventorySlotView view)
+    {
+        view.Refresh(currentItems[index], this);
+        if (view.Uid == HighlightUid)
+        {
+            view.ShowSelected();
+        }
     }
 
     public void Start()
@@ -130,16 +179,124 @@ public class InventoryPanel : BasePanel
 
     private void RefreshDeletePanel()
     {
-        RectTransform scrollContent = UIScrollView.GetComponent<ScrollRect>().content;
-        foreach (Transform cell in scrollContent)
+        switch (scrollMode)
         {
-            InventorySlotView packageCell = cell.GetComponent<InventorySlotView>();
-            //Refresh packageCell
-            packageCell.RefreshDeleteState();
+            case InventoryScrollMode.Pooled:
+                for (int i = 0; i < currentItems.Count; i++)
+                {
+                    slotPool[i].RefreshDeleteState();
+                }
+                break;
+
+            case InventoryScrollMode.Virtual:
+                foreach (InventorySlotView view in virtualGrid.ActiveSlots)
+                {
+                    view.RefreshDeleteState();
+                }
+                break;
+
+            default:
+                RectTransform scrollContent = UIScrollView.GetComponent<ScrollRect>().content;
+                foreach (Transform cell in scrollContent)
+                {
+                    InventorySlotView packageCell = cell.GetComponent<InventorySlotView>();
+                    //Refresh packageCell
+                    packageCell.RefreshDeleteState();
+                }
+                break;
         }
     }
 
     private void RefreshScroll(int itemType)
+    {
+        int gcBefore = System.GC.CollectionCount(0);
+        long start = System.Diagnostics.Stopwatch.GetTimestamp();
+
+        using (refreshScrollMarker.Auto())
+        {
+            switch (scrollMode)
+            {
+                case InventoryScrollMode.Pooled:
+                    RefreshScrollPooled(itemType);
+                    break;
+                case InventoryScrollMode.Virtual:
+                    RefreshScrollVirtual(itemType);
+                    break;
+                default:
+                    RefreshScrollOriginal(itemType);
+                    break;
+            }
+        }
+
+        if (logBenchmark)
+        {
+            // Only the synchronous part: Destroy and the layout / canvas
+            // rebuild happen later in the frame. Use the Profiler for the full cost.
+            double ms = (System.Diagnostics.Stopwatch.GetTimestamp() - start) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+            Debug.Log("[Inventory] " + scrollMode + " type=" + itemType + " " + ms.ToString("F2")
+                + " ms (call only), gen0 GCs during call: " + (System.GC.CollectionCount(0) - gcBefore));
+        }
+    }
+
+    // Selection state shared by the Pooled and Virtual modes.
+    private void ResetSelection()
+    {
+        HighlightUid = null;
+        if (currentItems.Count > 0)
+        {
+            UIDetailCard.gameObject.SetActive(true);
+            ChooseUID = currentItems[0].uid;
+        }
+        else
+        {
+            // Nothing to show: do not leave the previous tab's item on the card.
+            _chooseUid = null;
+            UIDetailCard.gameObject.SetActive(false);
+        }
+    }
+
+    private void RefreshScrollPooled(int itemType)
+    {
+        currentItems = controller.GetItemsByType(itemType);
+        ResetSelection();
+
+        RectTransform content = scrollRect.content;
+        for (int i = 0; i < currentItems.Count; i++)
+        {
+            if (i == slotPool.Count)
+            {
+                slotPool.Add(Instantiate(InventorySlotUIPrefab, content).GetComponent<InventorySlotView>());
+            }
+            InventorySlotView view = slotPool[i];
+            if (!view.gameObject.activeSelf)
+            {
+                view.gameObject.SetActive(true);
+            }
+            BindSlot(i, view);
+        }
+
+        // Hide the surplus, keep them for the next refresh.
+        for (int i = currentItems.Count; i < slotPool.Count; i++)
+        {
+            InventorySlotView view = slotPool[i];
+            if (view.gameObject.activeSelf)
+            {
+                view.OnRecycle();
+                view.gameObject.SetActive(false);
+            }
+        }
+
+        scrollRect.verticalNormalizedPosition = 1f;
+    }
+
+    private void RefreshScrollVirtual(int itemType)
+    {
+        currentItems = controller.GetItemsByType(itemType);
+        ResetSelection();
+        virtualGrid.SetItemCount(currentItems.Count, false);
+    }
+
+    private void RefreshScrollOriginal(int itemType)
     {
         RectTransform scrollContent = UIScrollView.GetComponent<ScrollRect>().content;
         for (int i = 0; i < scrollContent.childCount; i++)
@@ -290,6 +447,37 @@ public class InventoryPanel : BasePanel
         print("<<<<<< onClickDetail <<<<<<");
         UIManager.Instance.OpenPanel("ItemDetailPanel");
     }
+
+#if UNITY_EDITOR
+    // Benchmark helpers: Inspector -> InventoryPanel -> three-dot menu (Play mode).
+    // The test items are NOT saved, but any later SaveInventory() (pull, delete,
+    // enhance) would write them to PlayerPrefs, so remove them when done.
+    [ContextMenu("Bench/Add 500 test weapons")]
+    private void BenchAddItems()
+    {
+        List<InventorySlotItem> items = GameManager.Instance.GetInventorySaveData();
+        List<PackageTableItem> weapons = GameManager.Instance.GetPackageTableByType(GameConst.InventoryWeaponType);
+        for (int i = 0; i < 500; i++)
+        {
+            items.Add(new InventorySlotItem()
+            {
+                uid = "bench-" + System.Guid.NewGuid(),
+                id = weapons[Random.Range(0, weapons.Count)].id,
+                num = 1,
+                exp = 0,
+                isNew = false
+            });
+        }
+        RefreshUI();
+    }
+
+    [ContextMenu("Bench/Remove test weapons")]
+    private void BenchRemoveItems()
+    {
+        GameManager.Instance.GetInventorySaveData().RemoveAll(x => x.uid.StartsWith("bench-"));
+        RefreshUI();
+    }
+#endif
 
     private void SetTab(bool weaponActive)
     {
