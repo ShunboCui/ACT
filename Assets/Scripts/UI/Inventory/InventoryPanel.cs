@@ -97,6 +97,9 @@ public class InventoryPanel : BasePanel
 
     [SerializeField] private InventoryScrollMode scrollMode = InventoryScrollMode.Original;
     [SerializeField] private bool logBenchmark;
+    // Editor only: pause at the end of the frame that ran RefreshScroll, so the
+    // Profiler is already sitting on that frame.
+    [SerializeField] private bool pauseAfterRefresh;
 
     private static readonly ProfilerMarker refreshScrollMarker = new ProfilerMarker("Inventory.RefreshScroll");
 
@@ -236,6 +239,13 @@ public class InventoryPanel : BasePanel
             Debug.Log("[Inventory] " + scrollMode + " type=" + itemType + " " + ms.ToString("F2")
                 + " ms (call only), gen0 GCs during call: " + (System.GC.CollectionCount(0) - gcBefore));
         }
+
+#if UNITY_EDITOR
+        if (pauseAfterRefresh)
+        {
+            Debug.Break();
+        }
+#endif
     }
 
     // Selection state shared by the Pooled and Virtual modes.
@@ -452,9 +462,40 @@ public class InventoryPanel : BasePanel
     // Benchmark helpers: Inspector -> InventoryPanel -> three-dot menu (Play mode).
     // The test items are NOT saved, but any later SaveInventory() (pull, delete,
     // enhance) would write them to PlayerPrefs, so remove them when done.
+
+    // The menu also shows up on the prefab asset and on objects whose Awake has
+    // not run; there controller / scrollRect are null and RefreshUI throws.
+    private bool BenchReady()
+    {
+        if (Application.isPlaying && controller != null && scrollRect != null) return true;
+        Debug.LogWarning("Run this on the InventoryPanel(Clone) object in the Hierarchy while the game is playing, not on the prefab asset.");
+        return false;
+    }
+
+    [ContextMenu("Bench/Add 50 test weapons")]
+    private void BenchAdd50Items()
+    {
+        if (!BenchReady()) return;
+        List<InventorySlotItem> items = GameManager.Instance.GetInventorySaveData();
+        List<PackageTableItem> weapons = GameManager.Instance.GetPackageTableByType(GameConst.InventoryWeaponType);
+        for (int i = 0; i < 50; i++)
+        {
+            items.Add(new InventorySlotItem()
+            {
+                uid = "bench-" + System.Guid.NewGuid(),
+                id = weapons[Random.Range(0, weapons.Count)].id,
+                num = 1,
+                exp = 0,
+                isNew = false
+            });
+        }
+        RefreshUI();
+    }
+
     [ContextMenu("Bench/Add 500 test weapons")]
     private void BenchAddItems()
     {
+        if (!BenchReady()) return;
         List<InventorySlotItem> items = GameManager.Instance.GetInventorySaveData();
         List<PackageTableItem> weapons = GameManager.Instance.GetPackageTableByType(GameConst.InventoryWeaponType);
         for (int i = 0; i < 500; i++)
@@ -474,6 +515,7 @@ public class InventoryPanel : BasePanel
     [ContextMenu("Bench/Remove test weapons")]
     private void BenchRemoveItems()
     {
+        if (!BenchReady()) return;
         GameManager.Instance.GetInventorySaveData().RemoveAll(x => x.uid.StartsWith("bench-"));
         RefreshUI();
     }

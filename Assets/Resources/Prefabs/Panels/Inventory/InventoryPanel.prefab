@@ -1569,6 +1569,9 @@ MonoBehaviour:
   InventorySlotUIPrefab: {fileID: 5735917552488057508, guid: 10faf13d27c1a2140ab4da69cb6b2b02, type: 3}
   curMode: 0
   selectedDeleteUid: []
+  scrollMode: 2
+  logBenchmark: 0
+  pauseAfterRefresh: 0
 --- !u!1 &5393510579748973535
 GameObject:
   m_ObjectHideFlags: 0
