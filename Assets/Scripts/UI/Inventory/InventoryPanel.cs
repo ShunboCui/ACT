@@ -22,6 +22,18 @@ public class InventoryPanel : BasePanel
 
     private Transform UIMenuFood;
 
+    private Transform UIMenuWeaponIcon1;
+
+    private Transform UIMenuWeaponIcon2;
+
+    private Transform UIMenuWeaponIconSelected;
+
+    private Transform UIMenuFoodIcon1;
+
+    private Transform UIMenuFoodIcon2;
+
+    private Transform UIMenuFoodIconSelected;
+
     private Transform UIWeaponCount;
 
     private Transform UITabName;
@@ -93,7 +105,7 @@ public class InventoryPanel : BasePanel
 
     public void RefreshUI()
     {
-        RefreshScroll();
+        onClickWeapon();
         RefreshDetail();
         RefreshCount();
     }
@@ -127,7 +139,7 @@ public class InventoryPanel : BasePanel
         }
     }
 
-    private void RefreshScroll()
+    private void RefreshScroll(int itemType)
     {
         RectTransform scrollContent = UIScrollView.GetComponent<ScrollRect>().content;
         for (int i = 0; i < scrollContent.childCount; i++)
@@ -138,7 +150,7 @@ public class InventoryPanel : BasePanel
         //List<PackageLocalItem> packageItems = PackageLocalData.Instance.LoadPackage();
         //List<PackageLocalItem> packageItems = GameManager.Instance.GetSortedPackageLocalItems();
         //List<PackageLocalItem> packageWeaponItems = GameManager.Instance.GetPackageLocalItemsByType(GameConst.InventoryWeaponType);
-        List<InventorySlotItem> inventoryWeaponItems = controller.GetItemsByType(GameConst.InventoryWeaponType);
+        List<InventorySlotItem> inventoryWeaponItems = controller.GetItemsByType(itemType);
         if (inventoryWeaponItems.Count == 0) return;
 
         ChooseUID = inventoryWeaponItems[0].uid;
@@ -167,6 +179,11 @@ public class InventoryPanel : BasePanel
         UIMenu = transform.Find("TopCenter/Menus");
         UIMenuWeapon = transform.Find("TopCenter/Menus/Weapon");
         UIMenuFood = transform.Find("TopCenter/Menus/Food");
+        UIMenuWeaponIcon1 = transform.Find("TopCenter/Menus/Weapon/Icon1");
+        UIMenuWeaponIcon2 = transform.Find("TopCenter/Menus/Weapon/Icon2");
+        UIMenuFoodIcon1 = transform.Find("TopCenter/Menus/Food/Icon1");
+        UIMenuFoodIcon2 = transform.Find("TopCenter/Menus/Food/Icon2");
+
         UIWeaponCount = transform.Find("TopRight/NumText");
         UITabName = transform.Find("TopLeft/TabName");
         UICloseBtn = transform.Find("TopRight/Close");
@@ -203,12 +220,14 @@ public class InventoryPanel : BasePanel
 
     private void onClickWeapon()
     {
-        print("<<<<<< onClickWeapon <<<<<<");
+        RefreshScroll(GameConst.InventoryWeaponType);
+        SetTab(true);
     }
 
     private void onClickFood()
     {
-        print("<<<<<< onClickFood <<<<<<");
+        RefreshScroll(GameConst.InventoryFoodType);
+        SetTab(false);
     }
 
     // Esc / back: leave delete mode first, otherwise same as the close button.
@@ -270,5 +289,13 @@ public class InventoryPanel : BasePanel
     {
         print("<<<<<< onClickDetail <<<<<<");
         UIManager.Instance.OpenPanel("ItemDetailPanel");
+    }
+
+    private void SetTab(bool weaponActive)
+    {
+        UIMenuWeaponIcon1.gameObject.SetActive(!weaponActive);
+        UIMenuWeaponIcon2.gameObject.SetActive(weaponActive);
+        UIMenuFoodIcon1.gameObject.SetActive(weaponActive);
+        UIMenuFoodIcon2.gameObject.SetActive(!weaponActive);
     }
 }

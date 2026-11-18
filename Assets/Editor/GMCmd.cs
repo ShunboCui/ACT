@@ -46,6 +46,16 @@ public class GMCmd
             InventorySlotData.Instance.items.Add(packageLocalItemMaterial);
         }
 
+        InventorySlotItem packageLocalItemFood = new InventorySlotItem()
+        {
+            uid = Guid.NewGuid().ToString(),
+            id = 9,
+            num = 3,
+            exp = 0,
+            isNew = false
+        };
+        InventorySlotData.Instance.items.Add(packageLocalItemFood);
+
         InventorySlotData.Instance.SaveInventory();
     }
 
