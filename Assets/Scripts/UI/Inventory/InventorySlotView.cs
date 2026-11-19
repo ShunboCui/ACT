@@ -38,17 +38,22 @@ public class InventorySlotView : MonoBehaviour, IPointerClickHandler, IPointerEn
     private static Sprite GetSprite(string imagePath)
     {
         Sprite sprite;
-        if (CacheSprites && spriteCache.TryGetValue(imagePath, out sprite) && sprite != null)
+        if (spriteCache.TryGetValue(imagePath, out sprite) && sprite != null)
         {
             return sprite;
         }
 
-        Texture2D t = (Texture2D)Resources.Load(imagePath);
-        sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
-        if (CacheSprites)
+        // Texture imported as Sprite (2D and UI): the sprite already exists.
+        sprite = Resources.Load<Sprite>(imagePath);
+        if (sprite == null)
         {
-            spriteCache[imagePath] = sprite;
+            // Fallback: plain texture or a sprite sheet without slices.
+            Texture2D t = Resources.Load<Texture2D>(imagePath);
+            sprite = Sprite.Create(t, new Rect(0, 0, t.width, t.height),
+                new Vector2(0, 0), 100f, 0, SpriteMeshType.FullRect);
         }
+
+        spriteCache[imagePath] = sprite;
         return sprite;
     }
 

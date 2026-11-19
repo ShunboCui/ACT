@@ -89,7 +89,7 @@ public class InventoryPanel : BasePanel
         }
         set {
             _chooseUid = value;
-            RefreshDetail();
+            //RefreshDetail();
         }
     }
 
@@ -147,6 +147,7 @@ public class InventoryPanel : BasePanel
     public void Start()
     {
         RefreshUI();
+        BenchAdd50Items();
     }
 
     private void InitUI()
@@ -158,7 +159,7 @@ public class InventoryPanel : BasePanel
     public void RefreshUI()
     {
         onClickWeapon();
-        RefreshDetail();
+        //RefreshDetail();
         RefreshCount();
     }
 

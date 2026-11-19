@@ -120,3 +120,89 @@
 - `GetInventorySlotItemsByType` / `GetPackageTableByType` 每次分配新 `List` 并整表遍历，可以按类型缓存。
 - 面板每次打开都 Destroy 再 Instantiate，对象池随面板一起丢弃。把面板缓存起来（见 `UIFramework.md` 的待办）后，格子池才能跨次打开复用。
 - `InventorySlotView.OnPointerEnter/Exit/Click` 里有 `Debug.Log`，鼠标划过每个格子都会输出，建议删除或用条件编译。
+
+## 9. Profiler 截图
+
+测试条件同 §6：Editor Play 模式，CPU Usage → Hierarchy，搜索 `refreshs`，每组 3 次切换帧。截图在 `Docs/images/`。
+
+### Original
+
+| 50 件 | 500 件 |
+|---|---|
+| ![Original 50 #1](images/profiler_01.png) | ![Original 500 #1](images/profiler_04.png) |
+| 切换帧 616.59 ms，RefreshScroll 596.41 ms，GC 2.0 MB | 切换帧 4765.41 ms，RefreshScroll 4651.22 ms，GC 18.7 MB |
+
+另外两次：50 件 `profiler_02/03.png`，500 件 `profiler_05/06.png`。
+
+### Virtual
+
+| 50 件 | 500 件 |
+|---|---|
+| ![Virtual 50 #1](images/profiler_07.png) | ![Virtual 500 #1](images/profiler_10.png) |
+| 切换帧 21.13 ms，RefreshScroll 8.75 ms，GC 4.6 KB | 切换帧 21.64 ms，RefreshScroll 8.76 ms，GC 11.6 KB |
+
+另外两次：50 件 `profiler_08/09.png`，500 件 `profiler_11/12.png`。
+
+两组截图里 `RefreshScroll` 占切换帧的比例：Original 约 97%，Virtual 约 41%。Original 的帧几乎全是这个方法；Virtual 的帧里还有约 12 ms 在别处。
+
+## 10. 发现总结
+
+### 10.1 瓶颈是 `Sprite.Create`，不是 `Instantiate`
+
+最初的假设是"每次 Destroy 再 Instantiate 全部格子太贵"，Profiler 展开后不成立：
+
+- `RefreshScroll` 的 Self 只有 6–8%，耗时在它调用的子方法里。
+- 子方法里占大头的是 `Sprite.Create`，内部是 `SpriteMeshGenerator`（`TraceShape` → `Simplify` → `Decompose`），约占 86%，每次约 7 ms。
+- 50 件时共调用 55 次（50 个格子 + 详情卡等），约 400 ms，与总耗时吻合。
+- Instantiate / Destroy 的贡献主要是 **GC 分配**（每个新格子产生托管对象和 Text 的 mesh 缓存等），不是时间。
+
+这是 **CPU 主线程**瓶颈：全部同步执行在切换那一帧里，所以画面卡住。GPU 一栏是 `--ms`，没有参与。
+
+### 10.2 为什么 Sprite.Create 慢
+
+- Texture2D 是像素，Sprite 是"贴图的哪一块 + 中心点 + 网格"。
+- `Sprite.Create` 默认网格类型是 **Tight**，要扫描贴图像素算出紧贴轮廓的网格，耗时随贴图尺寸增长。
+- 原代码每个格子每次刷新都新建一个，而 50 个格子里只有约 5 种图标，等于同一张图重复算几十遍。
+- 编辑器里导入为 Sprite 的资源，网格在导入时已算好；运行时 `Resources.Load<Sprite>` 只是读取，几乎免费。
+- `Sprite.Create` 出来的对象是 `UnityEngine.Object`，C# GC 不会回收，只有 `Destroy` 或 `Resources.UnloadUnusedAssets` 才会释放，Original 模式会持续增长。
+
+### 10.3 修复（已应用到 `InventorySlotView.GetSprite`）
+
+1. 先查静态字典缓存，同一路径只处理一次。
+2. 未命中时先 `Resources.Load<Sprite>`，用导入时算好的 Sprite。
+3. 加载不到（贴图是 Multiple 且没切片，或不是 Sprite 类型）时，回退 `Sprite.Create(..., SpriteMeshType.FullRect)`，网格只是 4 个顶点的矩形，几乎无开销。
+
+现在缓存是无条件的，`InventorySlotView.CacheSprites` 字段已经不被 `GetSprite` 使用。因此 §7 里"把 CacheSprites 改成 false 重测"的消融方法**失效**，需要先在 `GetSprite` 里恢复对这个开关的判断才能做。
+
+素材相关：`Weapon_02`–`Weapon_05` 导入为 Sprite Multiple 且没有切片，`Resources.Load<Sprite>` 会返回 null，只能走回退路径。把它们改成 Sprite Mode = Single 即可走快速路径。
+
+### 10.4 结论与可信度
+
+| 结论 | 依据 | 可信度 |
+|---|---|---|
+| Original 耗时随物品数线性增长（×10 物品 → 约 ×7.5 耗时，×9.3 GC） | 两组各 3 次，重复性好 | 高 |
+| Virtual 的刷新耗时与物品数无关（约 9 ms） | 50 / 500 件结果一致 | 高 |
+| Virtual 比 Original 快 68×（50 件）/ 514×（500 件） | 同上 | **有混杂**：同时包含了"格子复用"和"Sprite 缓存"两个因素，没有拆开 |
+| Instantiate 不是主要瓶颈 | `Sprite.Create` 占约 86% | 中高：来自单次展开的调用树，没有做关掉缓存的对照 |
+| 绝对毫秒数 | Editor 里测的 | 低：Editor 有额外开销，倍数可信，毫秒数需要 Development Build 重测 |
+
+### 10.5 仍未解决的问题
+
+- **Virtual 切换帧仍约 21.5 ms**，超过 60 FPS 的 16.6 ms。`RefreshScroll` 只有约 8.8 ms，剩下约 12 ms 没有定位。猜测是 Canvas 重建 / 合批，**未验证**，需要在那一帧展开 `Canvas.SendWillRenderCanvases` 与 `Canvas.BuildBatch` 确认。
+- Virtual 剩下的 8.8 ms 里，`Self` 只有 1.4 ms，其余是格子绑定（`GetComponent`、`Text` 赋值、`GetPackageTableItemById`），可以缓存组件引用。
+- 数据侧 `GetInventorySlotItemsByType` 每次新建 `List`，Virtual 的 4.6 → 11.6 KB 就来自这里。
+- 同样的未缓存 `Sprite.Create` 还在 `ItemDetailCard.cs:65`、`PullCell.cs:58`、`MaterialSlotView.cs:56`。点击一个格子或抽卡时会触发，可以抽成共享的 `SpriteCache.Get(path)`。
+- **Pooled 模式没有测**，所以无法单独说明"格子复用"相比"只加 Sprite 缓存"的额外收益。
+
+### 10.6 下一步建议
+
+1. 修复后重测 Original（现在的 `GetSprite` 已经带缓存，所以 Original 会大幅变快），得到"只修 Sprite"的基线。
+2. 再测 Pooled、Virtual，才能拆出三个因素各自的贡献：Sprite 缓存、格子复用、虚拟滚动。
+3. 展开 Virtual 的 21.5 ms 帧，定位剩下的 12 ms。
+4. 补测滚动期间每帧耗时与 GC，这是虚拟滚动真正的卖点，目前没有数据。
+5. 在 Development Build（带 Autoconnect Profiler）上重复，再引用绝对数字。
+
+### 10.7 其他提醒
+
+- `ProfilerCaptures/` 里的 `.data` 文件有数百 MB 且未被 git 忽略，建议加入 `.gitignore`，不要提交。
+- 对外描述这次优化时，准确说法是"定位到主线程上 `Sprite.Create` 的网格生成是主要耗时，通过缓存和使用导入时生成的 Sprite 消除，再配合虚拟滚动使刷新耗时与物品数无关"，不要说成"虚拟滚动让它快了 500 倍"，因为那个倍数混杂了 Sprite 缓存。
