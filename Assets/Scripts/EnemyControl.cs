@@ -32,6 +32,7 @@ public class EnemyControl : MonoBehaviour
     public GameObject TakeDamageEffect;
     private Transform TakeDamageEffectPosition;
     private Slider enemyHealthBar;
+    private MonsterDropper dropper;
     public bool IsDead
     {
         get { return isDead; }
@@ -41,6 +42,7 @@ public class EnemyControl : MonoBehaviour
     {
         enemyAnimator = gameObject.GetComponent<Animator>();
         agent = gameObject.GetComponent<NavMeshAgent>();
+        dropper = gameObject.GetComponent<MonsterDropper>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -193,6 +195,7 @@ public class EnemyControl : MonoBehaviour
             isDead = true;
             enemyAnimator.CrossFade("dead_02", 0.1f);
             GetComponent<QuestEnemyContext>()?.ReportDeath();
+            dropper?.DropLoot();
             Destroy(this.gameObject, 3f);
         }
     }

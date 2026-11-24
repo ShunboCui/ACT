@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4939097969129085002}
   - component: {fileID: 2414661276762817377}
   - component: {fileID: 6982711101997500425}
+  - component: {fileID: 2847380726869789672}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -269,6 +270,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d4c934d733397e47a83365637d03984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestEnemyContext
+--- !u!114 &2847380726869789672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2418325142191418719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de47a37bb5c3d1a43bc0178719c87233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterDropper
+  lootTable: {fileID: 11400000, guid: 35627c508ed7a93418fc75b4c6946ab5, type: 2}
+  dropOrigin: {fileID: 7106814154294148654}
+  scatterRadius: 0.5
 --- !u!1 &2952934697095649280
 GameObject:
   m_ObjectHideFlags: 0
