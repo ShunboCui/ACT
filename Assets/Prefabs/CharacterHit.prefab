@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2144291961867371238}
   - component: {fileID: 1340732807873027575}
   - component: {fileID: 1352517238192302159}
+  - component: {fileID: -5260369016401231904}
   m_Layer: 0
   m_Name: CharacterHit
   m_TagString: CharacterAttackBox
@@ -49,7 +50,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7466300565254622670}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -112,3 +113,15 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5260369016401231904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466300565254622670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6bb484374b4c849926a25ff4872ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'

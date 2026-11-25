@@ -32,7 +32,7 @@ public class EnemyControl : MonoBehaviour
     public GameObject TakeDamageEffect;
     private Transform TakeDamageEffectPosition;
     private Slider enemyHealthBar;
-    private float playerDamage;
+    private MonsterDropper dropper;
     public bool IsDead
     {
         get { return isDead; }
@@ -42,6 +42,7 @@ public class EnemyControl : MonoBehaviour
     {
         enemyAnimator = gameObject.GetComponent<Animator>();
         agent = gameObject.GetComponent<NavMeshAgent>();
+        dropper = gameObject.GetComponent<MonsterDropper>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -49,7 +50,6 @@ public class EnemyControl : MonoBehaviour
     {
         currentHP = maxHP;
         enemyStateMachine = new EnemyStateMachine(this);
-        playerDamage = GameObject.FindWithTag("Player").GetComponent<PlayerControl>().playerDamage;
         player = GameObject.FindWithTag("Player").transform;
         TakeDamageEffectPosition = this.transform.Find("EnemyGetHitEffectPosition");
         DealDamagePosition = this.transform.Find("EnemyDamagePosition");
@@ -69,15 +69,6 @@ public class EnemyControl : MonoBehaviour
         //EnemyStateController();
         Dead();
         UIControl();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!isDead && other.gameObject.tag == "CharacterAttackBox")
-        {
-            TakeDamage();
-            Debug.Log("Current health " + currentHP);
-        }
     }
 
     public void FaceToPlayer()
@@ -177,9 +168,12 @@ public class EnemyControl : MonoBehaviour
         this.enemyAnimator.SetBool("Attacking", false);
     }
 
-    private void TakeDamage()
+    public void TakeDamage(int damage)
     {
-        currentHP -= playerDamage;
+        if (isDead) return;
+        currentHP -= damage;
+        //Debug.Log("Enemy taking damage: " + damage.ToString());
+
         StartUnderAttackAnim();
         this.enemyAnimator.CrossFade("get_hit", 0.1f);
         Instantiate(TakeDamageEffect, TakeDamageEffectPosition.position, TakeDamageEffectPosition.rotation);
@@ -201,6 +195,7 @@ public class EnemyControl : MonoBehaviour
             isDead = true;
             enemyAnimator.CrossFade("dead_02", 0.1f);
             GetComponent<QuestEnemyContext>()?.ReportDeath();
+            dropper?.DropLoot();
             Destroy(this.gameObject, 3f);
         }
     }

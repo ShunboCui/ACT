@@ -22,6 +22,8 @@ MonoBehaviour:
     imagePath: Image/UI/Weapon/Weapon_01
     modelPath: Prefabs/Weapon/Dull_Blade
     expGain: 0
+    baseDamage: 10
+    damagePerLevel: 1
   - id: 2
     type: 0
     star: 1
@@ -41,6 +43,8 @@ MonoBehaviour:
     imagePath: Image/UI/Weapon/Weapon_02
     modelPath: Prefabs/Weapon/Freedom_Sworn
     expGain: 0
+    baseDamage: 10
+    damagePerLevel: 1
   - id: 3
     type: 0
     star: 1
@@ -50,6 +54,8 @@ MonoBehaviour:
     imagePath: Image/UI/Weapon/Weapon_03
     modelPath: Prefabs/Weapon/Cool_Steel
     expGain: 0
+    baseDamage: 10
+    damagePerLevel: 1
   - id: 4
     type: 0
     star: 1
@@ -64,6 +70,8 @@ MonoBehaviour:
     imagePath: Image/UI/Weapon/Weapon_04
     modelPath: Prefabs/Weapon/Katana
     expGain: 0
+    baseDamage: 10
+    damagePerLevel: 1
   - id: 5
     type: 0
     star: 1
@@ -73,6 +81,8 @@ MonoBehaviour:
     imagePath: Image/UI/Weapon/Weapon_05
     modelPath: Prefabs/Weapon/Lions_Roar
     expGain: 0
+    baseDamage: 10
+    damagePerLevel: 1
   - id: 6
     type: 2
     star: 0
@@ -82,6 +92,8 @@ MonoBehaviour:
     imagePath: Image/UI/Material/Item_Enhancement_Ore
     modelPath: 
     expGain: 400
+    baseDamage: 0
+    damagePerLevel: 0
   - id: 7
     type: 2
     star: 0
@@ -91,6 +103,8 @@ MonoBehaviour:
     imagePath: Image/UI/Material/Item_Fine_Enhancement_Ore
     modelPath: 
     expGain: 2000
+    baseDamage: 0
+    damagePerLevel: 0
   - id: 8
     type: 2
     star: 0
@@ -100,3 +114,16 @@ MonoBehaviour:
     imagePath: Image/UI/Material/Item_Mystic_Enhancement_Ore
     modelPath: 
     expGain: 10000
+    baseDamage: 0
+    damagePerLevel: 0
+  - id: 9
+    type: 1
+    star: 0
+    name: Ramen
+    description: 
+    skillsDescription: 
+    imagePath: Image/UI/Food/Ramen
+    modelPath: Prefabs/Food/Ramen
+    expGain: 0
+    baseDamage: 0
+    damagePerLevel: 0

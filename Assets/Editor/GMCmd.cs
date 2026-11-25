@@ -46,6 +46,16 @@ public class GMCmd
             InventorySlotData.Instance.items.Add(packageLocalItemMaterial);
         }
 
+        InventorySlotItem packageLocalItemFood = new InventorySlotItem()
+        {
+            uid = Guid.NewGuid().ToString(),
+            id = 9,
+            num = 3,
+            exp = 0,
+            isNew = false
+        };
+        InventorySlotData.Instance.items.Add(packageLocalItemFood);
+
         InventorySlotData.Instance.SaveInventory();
     }
 
@@ -67,12 +77,12 @@ public class GMCmd
 
     }
 
-    [MenuItem("GMCmd/Switch to weapon 2")]
+    [MenuItem("GMCmd/Switch to first weapon")]
     public static void SwitchWeapon()
     {
         //WeaponController.Instance.EquipWeapon(GameObject.Find("Player").GetComponent<PlayerControl>().Lions_Roar_Data);
-        PackageTableItem packageTableItem = GameManager.Instance.GetPackageTableItemById(5);
-        WeaponController.Instance.EquipWeapon(packageTableItem);
+        InventorySlotItem firstWeaponItem = GameManager.Instance.GetFirstWeapon();
+        WeaponController.Instance.EquipWeapon(firstWeaponItem);
     }
 
     [MenuItem("GMCmd/Stop camera")]

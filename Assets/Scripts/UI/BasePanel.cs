@@ -45,6 +45,14 @@ public class BasePanel : MonoBehaviour
     {
     }
 
+    // Whether this panel takes part in the panel stack. Always-on panels such
+    // as the HUD return false: the back key skips them and they do not count
+    // for UIManager.HasOpenPanel.
+    public virtual bool InStack
+    {
+        get { return true; }
+    }
+
     // Whether the back key (Esc / UIManager.GoBack) may act on this panel.
     // Return false for panels that must not be dismissed, e.g. game over.
     public virtual bool CanGoBack
