@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4872671750290648180}
   - component: {fileID: 3280125304315395950}
+  - component: {fileID: 7811535550007946263}
   m_Layer: 5
   m_Name: QuestTracker
   m_TagString: Untagged
@@ -55,6 +56,30 @@ MonoBehaviour:
   statusText: {fileID: 5206143710159829068}
   progressText: {fileID: 1127423570512770358}
   progressFill: {fileID: 5827587213991953292}
+--- !u!223 &7811535550007946263
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 119460891472587186}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &365377354778913091
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,6 +512,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2991458176439748548}
+  - component: {fileID: 6168063492169683178}
   m_Layer: 5
   m_Name: PlayerHealthHUD
   m_TagString: Untagged
@@ -516,6 +542,30 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 50}
   m_SizeDelta: {x: 2205.0208, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &6168063492169683178
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2981072026136246520}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &3685457905084067195
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,7 +908,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f14973c6b8082cf4096dc899ad887d81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  Player: {fileID: 0}
 --- !u!1 &5229982820485214694
 GameObject:
   m_ObjectHideFlags: 0
@@ -1414,13 +1463,15 @@ GameObject:
   - component: {fileID: 5971810209766348955}
   - component: {fileID: 5814863413260648070}
   - component: {fileID: 1688509508131315781}
+  - component: {fileID: 2911319988053197439}
+  - component: {fileID: 6026430127639418604}
   m_Layer: 5
   m_Name: Interact
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8860897837575666158
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1523,6 +1574,47 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!223 &2911319988053197439
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7308523268313464511}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &6026430127639418604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7308523268313464511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &7452588695331087716
 GameObject:
   m_ObjectHideFlags: 0

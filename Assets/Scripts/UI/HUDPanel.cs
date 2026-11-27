@@ -9,6 +9,8 @@ public class HUDPanel : BasePanel
     private Transform PlayerHealthHUD;
     private Transform PlayerHealthSlider;
     private PlayerHealth playerHealth;
+    private Canvas interactButtonCanvas;
+    private GraphicRaycaster interactButtonRaycaster;
 
     // The HUD is always on: Esc must not close it.
     public override bool InStack
@@ -45,6 +47,10 @@ public class HUDPanel : BasePanel
         QuestTracker = transform.Find("QuestTracker");
         PlayerHealthHUD = transform.Find("PlayerHealthHUD");
         PlayerHealthSlider = transform.Find("PlayerHealthHUD/HealthSlider");
+
+        interactButtonCanvas = Interact.GetComponent<Canvas>();
+        interactButtonRaycaster = Interact.GetComponent<GraphicRaycaster>();
+        SetInteractionButtonVisible(false);
     }
 
     protected override void OnOpen(object args)
@@ -56,14 +62,11 @@ public class HUDPanel : BasePanel
 
     // ---------- Interaction button (NPC prompt) ----------
 
-    public void EnableInteractionButton()
+    public void SetInteractionButtonVisible(bool visible)
     {
-        Interact.gameObject.SetActive(true);
-    }
-
-    public void DisableInteractionButton()
-    {
-        Interact.gameObject.SetActive(false);
+        //Interact.gameObject.SetActive(true);
+        interactButtonCanvas.enabled = visible;
+        interactButtonRaycaster.enabled = visible;
     }
 
     public void BindInteractionButton(DialogueData dialogueData, Func<bool> acceptQuest)

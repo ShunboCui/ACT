@@ -150,6 +150,12 @@ public class UIManager : MonoBehaviour
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
         rect.localScale = Vector3.one;
+
+        Canvas canvas = layerObject.AddComponent<Canvas>();
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = (int)layer * 100;
+        canvas.additionalShaderChannels = UIRoot.GetComponent<Canvas>().additionalShaderChannels;
+        layerObject.AddComponent<GraphicRaycaster>();
         return rect;
     }
 

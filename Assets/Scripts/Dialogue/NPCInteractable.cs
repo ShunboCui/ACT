@@ -19,7 +19,7 @@ public class NPCInteractable : MonoBehaviour
         {
             playerInRange = true;
             Hud.BindInteractionButton(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition));
-            Hud.EnableInteractionButton();
+            Hud.SetInteractionButtonVisible(true);
         }
     }
 
@@ -28,7 +28,7 @@ public class NPCInteractable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            Hud.DisableInteractionButton();
+            Hud.SetInteractionButtonVisible(false);
         }
     }
 
@@ -46,7 +46,7 @@ public class NPCInteractable : MonoBehaviour
             Keyboard.current.fKey.wasPressedThisFrame)
         {
             DialogueManager.Instance.StartDialogue(dialogueData, () => QuestManager.Instance.AcceptQuest(questDefinition), ()=> QuestManager.Instance.CompleteQuest(questDefinition));
-            Hud.DisableInteractionButton();
+            Hud.SetInteractionButtonVisible(false);
         }
     }
 }
